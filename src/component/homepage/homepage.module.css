@@ -1,0 +1,20 @@
+.homepage {
+    background-image: url("https://itanks.eu/app/uploads/2020/07/IOT-PUBQUIZ-BANNER.jpg");
+    width: 100%;
+    height: 100vh;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    isolation: isolate;
+}
+
+.homepage::after {
+    content: "";
+    position: absolute;
+    background: #242526;
+    inset: 0;
+    z-index: -1;
+    opacity: 0.3;
+}
+
+/*# sourceMappingURL=globals.css.map */
