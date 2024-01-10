@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Modal } from "antd";
-import { Button, Checkbox, Form, Input, Col, Row, Divider, Image } from "antd";
+import { Form, Input, Col, Row, Divider, Image } from "antd";
 
 interface FieldType {
   username?: string;
@@ -17,7 +17,7 @@ const onFinishFailed = (errorInfo: any) => {
 };
 
 const ModalViewUser = (props: any) => {
-  const { title, open, onOk, onCancel, listUser, dataUpdate, setDataUpdate } =
+  const {  open, onOk, onCancel, dataUpdate } =
     props;
   console.log("check data update modal:", dataUpdate);
 

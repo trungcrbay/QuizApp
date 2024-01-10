@@ -1,7 +1,6 @@
 "use client";
 import { Card, Divider, Row, Col } from "antd";
 import CountUp from "react-countup";
-import { useEffect } from "react";
 
 const AdminDashboard = (props: any) => {
   const { dataDashboard } = props;

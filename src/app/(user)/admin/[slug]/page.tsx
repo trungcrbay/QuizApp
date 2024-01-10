@@ -6,7 +6,7 @@ const Admin = async () => {
   const session = await getServerSession(authOptions);
   const res = await fetch("http://localhost:8081/api/v1/participant/all", {
     method: "GET",
-    
+
     headers: {
       "Content-Type": "application/json",
       //@ts-ignore
@@ -15,20 +15,9 @@ const Admin = async () => {
     },
   });
   const data = await res.json();
-
-  const resDashboard = await fetch(`http://localhost:8081/api/v1/overview`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      //@ts-ignore
-      Authorization: `Bearer ${session.access_token}`,
-    },
-  });
-  const getData = await resDashboard.json();
-
   return (
     <div style={{ height: "100vh" }}>
-      <SiderAdmin listUser={data.DT} dataDashboard={getData.DT}/>
+      <SiderAdmin listUser={data.DT} />
     </div>
   );
 };

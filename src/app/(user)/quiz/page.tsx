@@ -23,7 +23,7 @@ const DashboardQuiz = async () => {
   const data = await getAllQuiz()
   console.log("vcl data oi: ",data.DT)
   return (
-    <div style={{ marginTop: "70px" }}>
+    <div style={{ marginTop: 0 }}>
       <HomeQuiz dataQuiz={data.DT}/>
     </div>
   );

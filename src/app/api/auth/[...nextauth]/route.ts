@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import GithubProvider from "next-auth/providers/github";
+import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { AuthOptions } from "next-auth";
 export const authOptions: AuthOptions = {
@@ -29,7 +30,7 @@ export const authOptions: AuthOptions = {
           return userInfo.DT as any;
         }
         // Return null if user data could not be retrieved
-        else{
+        else {
           return null;
         }
       },
@@ -38,14 +39,23 @@ export const authOptions: AuthOptions = {
       clientId: process.env.GITHUB_ID!,
       clientSecret: process.env.GITHUB_SECRET!,
     }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!
+    })
   ],
   callbacks: {
     jwt({ token, trigger, user, account, profile }) {
+      console.log("profile: ",profile) //contain main data user github
+      console.log("account: ",account) //contain data user github
       if (trigger === "signIn" && account?.provider === "credentials") {
         //@ts-ignore
         token.access_token = user.access_token;
         //@ts-ignore
         token.refresh_token = user.refresh_token;
+        token.email = user.email;
+        //@ts-ignore
+        token.role=  user.role;
       }
       return token;
     },
@@ -55,7 +65,8 @@ export const authOptions: AuthOptions = {
         session.access_token = token.access_token;
         //@ts-ignore
         session.refresh_token = token.refresh_token;
-        
+        session.role = token.role;
+
       }
       return session;
     },

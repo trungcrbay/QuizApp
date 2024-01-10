@@ -16,7 +16,7 @@ interface DataType {
   tags: string[];
 }
 
-const UserTable = (props: any) => {
+const QuizTable = (props: any) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isModalUpdate, setIsModalUpdate] = useState<boolean>(false);
   const [dataUpdate, setDataUpdate] = useState({});
@@ -210,4 +210,4 @@ const UserTable = (props: any) => {
   );
 };
 
-export default UserTable;
+export default QuizTable;

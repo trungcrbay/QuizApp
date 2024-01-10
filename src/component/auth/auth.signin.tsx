@@ -7,11 +7,16 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
-
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useRouter } from 'next/navigation'
+import { useSession, signIn, signOut } from "next-auth/react"
 
 const AuthSignIn = (props: any) => {
-
+    //@ts-ignore
+    const { data, session } = useSession();
+    const router = useRouter()
+    console.log("check data: ", data)
+    console.log("check session: ", session)
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
@@ -29,6 +34,11 @@ const AuthSignIn = (props: any) => {
         setErrorUsername("");
         setErrorPassword("");
 
+        signIn('credentials', {
+            email: username,
+            password: password
+        })
+
         if (!username) {
             setIsErrorUsername(true);
             setErrorUsername("Username is not empty.")
@@ -40,16 +50,32 @@ const AuthSignIn = (props: any) => {
             return;
         }
         console.log(">>> check username: ", username, ' pass: ', password)
+
     }
 
+    if (data) {
+        router.push('/')
+    }
+
+    const keyDownHandler = (event: React.KeyboardEvent) => {
+        console.log(event.key)
+        if (event.key === 'Enter') {
+            handleSubmit();
+        }
+    };
+
+    useEffect(() => {
+        //@ts-ignore
+        document.addEventListener('keydown', keyDownHandler);
+
+        return () => {
+            //@ts-ignore
+            document.removeEventListener('keydown', keyDownHandler);
+        };
+    }, [username, password]);
+
     return (
-        <Box
-            sx={{
-                // backgroundImage: "linear-gradient(to bottom, #ff9aef, #fedac1, #d5e1cf, #b7e6d9)",
-                // backgroundColor: "#b7e6d9",
-                // backgroundRepeat: "no-repeat"
-            }}
-        >
+        <Box>
             <Grid container
                 sx={{
                     display: "flex",
@@ -144,8 +170,11 @@ const AuthSignIn = (props: any) => {
                                     cursor: "pointer",
                                     bgcolor: "orange"
                                 }}
+
                             >
-                                <GitHubIcon titleAccess="Login with Github" />
+                                <GitHubIcon
+                                    onClick={() => signIn('github')}
+                                    titleAccess="Login with Github" />
                             </Avatar>
 
                             <Avatar
@@ -154,7 +183,9 @@ const AuthSignIn = (props: any) => {
                                     bgcolor: "orange"
                                 }}
                             >
-                                < GoogleIcon titleAccess="Login with Google" />
+                                < GoogleIcon titleAccess="Login with Google" 
+                                onClick={() => signIn('google')}
+                                />
                             </Avatar>
                         </Box>
                     </div>

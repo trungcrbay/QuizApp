@@ -5,25 +5,24 @@ const DetailQuizId = async ({ params }: { params: { slug: string } }) => {
   const session = await getServerSession(authOptions);
   console.log("vcl slug:", params.slug)
   const getDetailQuiz = async () => {
-    const res = await fetch(
-      `http://localhost:8081/api/v1/quiz-with-qa/${params.slug}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          //ts-ignore
-          Authorization: `Bearer ${session?.access_token}`,
-        },
-      }
+    await new Promise(resolve => setTimeout(resolve,1500))
+    const res = await fetch(`http://localhost:8081/api/v1/quiz-with-qa/${params.slug}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        //ts-ignore
+        Authorization: `Bearer ${session?.access_token}`,
+      },
+    }
     );
 
     return res.json();
   };
   const data = await getDetailQuiz();
-  console.log("text data: ",data.DT.qa)
+  console.log("text data: ", data.DT.qa)
   return (
-    <div style={{marginTop:'100px'}}>
-      <DetailQuiz detailDataQuiz = {data.DT.qa}/>
+    <div style={{ paddingTop: '100px',height:'100%' }} className="homepage">
+      <DetailQuiz detailDataQuiz={data.DT.qa} session ={session?.access_token}/>
     </div>
   );
 };

@@ -1,29 +1,20 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import {
-  Button,
-  Checkbox,
   Form,
   Input,
   Col,
   Row,
   Divider,
-  Image,
   Upload,
+  Image,
   Modal,
+  Button,
   message,
 } from "antd";
-import type {
-  RcFile,
-  UploadFile,
-  UploadProps,
-  UploadChangeParam,
-} from "antd/es/upload/interface";
-import {
-  UploadOutlined,
-  LoadingOutlined,
-  PlusOutlined,
-} from "@ant-design/icons";
+import { UploadOutlined } from '@ant-design/icons';
+import type { UploadProps } from 'antd';
+
 
 interface FieldType {
   username?: string;
@@ -31,24 +22,12 @@ interface FieldType {
   remember?: string;
 }
 
-
-const propsImage: UploadProps = {
-  name: "file",
-  action: "https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188",
-  headers: {
-    authorization: "authorization-text",
-  },
-  onChange(info) {
-    if (info.file.status !== "uploading") {
-      console.log(info.file, info.fileList);
-    }
-    if (info.file.status === "done") {
-      message.success(`${info.file.name} file uploaded successfully`);
-    } else if (info.file.status === "error") {
-      message.error(`${info.file.name} file upload failed.`);
-    }
-  },
-};
+interface User {
+  id: any;
+  username: string;
+  role: string;
+  image: File
+}
 
 const onFinish = (values: any) => {
   console.log("Success:", values);
@@ -58,81 +37,73 @@ const onFinishFailed = (errorInfo: any) => {
   console.log("Failed:", errorInfo);
 };
 
-const getBase64 = (img: RcFile, callback: (url: string) => void) => {
-  const reader = new FileReader();
-  reader.addEventListener("load", () => callback(reader.result as string));
-  reader.readAsDataURL(img);
-};
-
-const beforeUpload = (file: RcFile) => {
-  const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-  if (!isJpgOrPng) {
-    message.error("You can only upload JPG/PNG file!");
-  }
-  const isLt2M = file.size / 1024 / 1024 < 2;
-  if (!isLt2M) {
-    message.error("Image must smaller than 2MB!");
-  }
-  return isJpgOrPng && isLt2M;
-};
 
 const ModalUpdateUser = (props: any) => {
-  const { open, onOk, onCancel, listUser, dataUpdate } = props;
+  const { open, onCancel, dataUpdate } = props;
   console.log("check data da update modal:", dataUpdate);
-  const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string>();
   const [username, setUsername] = useState("");
-  const [id, setId] = useState("");
+  const [id, setId] = useState(null);
   const [role, setRole] = useState("");
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState<File | null>(null);
 
-  const handleChange: UploadProps["onChange"] = (
-    info: UploadChangeParam<UploadFile>
-  ) => {
-    if (info.file.status === "uploading") {
-      setLoading(true);
-      return;
-    }
-    if (info.file.status === "done") {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj as RcFile, (url) => {
-        setLoading(false);
-        setImageUrl(url);
-      });
-    }
+  const propsUpload: UploadProps = {
+    name: "file",
+    multiple: true,
+    action: "https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188",
+    onChange(info) {
+      const { status } = info.file;
+
+      if (status !== "uploading") {
+        console.log("check file list:", info.fileList[0]);
+        //@ts-ignore
+        setImage(info.fileList[0].originFileObj);
+      }
+      if (status === "done") {
+        message.success(`${info.file.name} file uploaded successfully.`);
+      } else if (status === "error") {
+        message.error(`${info.file.name} file upload failed.`);
+      }
+    },
+    onDrop(e) {
+      console.log("Dropped files", e.dataTransfer.files);
+    },
   };
-  const uploadButton = (
-    <div>
-      {loading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </div>
-  );
-  const updateParticipant = async () => {
+
+  useEffect(() => {
+    if (dataUpdate) {
+      setUsername(dataUpdate.username);
+      setId(dataUpdate.id);
+      setRole(dataUpdate.role);
+    }
+  }, [dataUpdate]);
+
+  const updateParticipant = async ({ id, username, role, image }: User) => {
+    const formData = new FormData();
+    formData.append("id", id);
+    formData.append("username", username);
+    formData.append("role", role);
+    formData.append("userImage", image);
+
     const res = await fetch(`http://localhost:8081/api/v1/participant`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-      body: JSON.stringify({
-        id: id,
-        username: username,
-        role: role,
-        image: image,
-      }),
+      body: formData
     });
     const data = await res.json();
     console.log(data);
   };
 
-  useEffect(() => {
-    updateParticipant();
-  }, [username,role,image]);
+  const handleUpdateParticipant = () => {
+    console.log("check data before update: ", id, username, role, image)
+    //@ts-ignore
+    updateParticipant({ id, username, role, image })
+  }
+
   return (
     <>
       <Modal
         title="Update User"
         open={open}
-        onOk={onOk}
+        onOk={handleUpdateParticipant}
         onCancel={onCancel}
         width={900}
       >
@@ -156,7 +127,7 @@ const ModalUpdateUser = (props: any) => {
             <Col span={12}>
               <Form.Item<FieldType> label="Username">
                 <Input
-                  value={dataUpdate.username}
+                  value={username}
                   onChange={(e) => setUsername(e.target.value)}
                 />
               </Form.Item>
@@ -172,7 +143,7 @@ const ModalUpdateUser = (props: any) => {
             <Col span={12}>
               <Form.Item<FieldType> label="Role">
                 <Input
-                  value={dataUpdate.role}
+                  value={role}
                   onChange={(e) => setRole(e.target.value)}
                 />
               </Form.Item>
@@ -189,7 +160,9 @@ const ModalUpdateUser = (props: any) => {
               </div>
             </Col>
           </Row>
-          
+          <Upload {...propsUpload}>
+            <Button icon={<UploadOutlined />}>Change Avatar</Button>
+          </Upload>
         </Form>
       </Modal>
     </>

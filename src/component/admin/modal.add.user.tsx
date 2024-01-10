@@ -16,7 +16,7 @@ interface User {
   password: string;
   username: string;
   role: string;
-  image?: string;
+  file: File;
 }
 
 const onFinish = (values: any) => {
@@ -33,28 +33,8 @@ const ModalAddNewUser = (props: any) => {
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
   const [password, setPassword] = useState("");
-  // State to store the file
-  const [file, setFile] = useState("");
-  // State to store the base64
-  const [image, setImage] = useState("");
+  const [file, setFile] = useState<File | null>(null);
 
-  const toBase64 = (file: File) => {
-    return new Promise((resolve, reject) => {
-      const fileReader = new FileReader();
-
-      if (fileReader.readAsDataURL && file instanceof Blob) {
-        fileReader.readAsDataURL(file);
-      }
-
-      fileReader.onload = () => {
-        resolve(fileReader.result);
-      };
-
-      fileReader.onerror = (error) => {
-        reject(error);
-      };
-    });
-  };
   const propsUpload: UploadProps = {
     name: "file",
     multiple: true,
@@ -63,10 +43,9 @@ const ModalAddNewUser = (props: any) => {
       const { status } = info.file;
 
       if (status !== "uploading") {
-        console.log(info.file);
         console.log("check file list:", info.fileList[0]);
         //@ts-ignore
-        setImage(info.fileList[0]);
+        setFile(info.fileList[0].originFileObj);
       }
       if (status === "done") {
         message.success(`${info.file.name} file uploaded successfully.`);
@@ -79,21 +58,19 @@ const ModalAddNewUser = (props: any) => {
     },
   };
 
-  // When the file is selected, set the file state
-
   const postNewUser = async ({
     email,
     password,
     username,
     role,
-    image,
+    file,
   }: User) => {
     const formData = new FormData();
     formData.append("email", email);
     formData.append("password", password);
     formData.append("username", username);
     formData.append("role", role);
-    formData.append("image", image);
+    formData.append("userImage", file);
 
     const res = await fetch(`http://localhost:8081/api/v1/participant`, {
       method: "POST",
@@ -104,18 +81,14 @@ const ModalAddNewUser = (props: any) => {
     if (data) {
       message.success("Create new user successfully!");
     }
-    console.log("check data post: ", data);
   };
-  const handleOkAddUser =  () => {
-    try{
-      // Chuyển đối tượng File thành chuỗi base64
-    const base64Img =   toBase64(image);
-    // postNewUser({ email, username, role, password, image });
-    console.log("chếch image: ", base64Img);
-    }catch(e){
-      console.log(e)
-    }
-  };
+
+  const handleOkAddUser = async () => {
+    console.log("chekc data before upload: ", email, username, role, password, file)
+    //@ts-ignore
+    postNewUser({ email, username, role, password, file});
+  }
+
   const handleCancel = () => {
     setOpen(false);
   };
@@ -125,7 +98,7 @@ const ModalAddNewUser = (props: any) => {
       <Modal
         title="Add New User"
         open={open}
-        onOk={handleOkAddUser}
+        onOk={() => handleOkAddUser()}
         onCancel={handleCancel}
         width={900}
       >
@@ -176,7 +149,7 @@ const ModalAddNewUser = (props: any) => {
           </Row>
           <Row>
             <Col span={24}>
-              <Form.Item<FieldType>>
+              <Form.Item<FieldType> label="Image">
                 <Dragger {...propsUpload}>
                   <p className="ant-upload-drag-icon">
                     <InboxOutlined />

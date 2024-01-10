@@ -5,24 +5,95 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
 import Button from "@mui/material/Button";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import CircleIcon from "@mui/icons-material/Circle";
-import Badge from "@mui/material/Badge";
-import { useState } from "react";
-import CheckIcon from "@mui/icons-material/Check";
-import ReplayIcon from "@mui/icons-material/Replay";
+import { useEffect, useState } from "react";
+import { useParams } from 'next/navigation'
+import _ from "lodash";
+import ModalQuizResult from "./modal.result";
+import RightContent from "./right.content";
+
+interface IAnswerData {
+  id: number;
+  description: string;
+  imageFile: string;
+  imageName: string;
+  answers: {
+    id: number;
+    description: string;
+    isCorrect: boolean;
+    isSelected: boolean;
+  }[];
+}
+
+interface Answer {
+  questionId: number;
+  userAnswerId: number[];
+}
+
+interface Payload {
+  quizId: number;
+  answers: Answer[];
+}
+
+interface Result {
+  countCorrect: number;
+  countTotal: number;
+  quizData?: any
+}
 
 const DetailQuiz = (props: any) => {
-  const [value, setValue] = useState("female");
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue((event.target as HTMLInputElement).value);
-  };
-  const { detailDataQuiz } = props;
+  const { detailDataQuiz, session } = props;
+  const [dataQuiz, setDataquiz] = useState<IAnswerData[]>(detailDataQuiz);
   const [indexQuiz, setIndexQuiz] = useState<number>(0);
+  const [answerApi, setAnswerApi] = useState<Answer[]>([]);
+  const [open, setOpen] = useState<boolean>(false);
+  const [result, setResult] = useState<Result | any>({});
+  const params = useParams<{ slug: string }>();
+  const quizId = params.slug
+  const handleOpen = () => setOpen(true);
+  const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>, id: any, quizId: any) => {
+    const currentAnswers = _.cloneDeep(dataQuiz[indexQuiz].answers); // Tạo bản sao sâu
+    currentAnswers.forEach((item: any) => {
+      if (+item.id === +quizId) {
+        item.isSelected = true;
+      } else {
+        item.isSelected = false;
+      }
+    });
+
+    dataQuiz[indexQuiz].answers = currentAnswers; // Cập nhật dữ liệu gốc
+    setDataquiz(dataQuiz);
+  }
+
+  const handleSubmit = () => {
+    console.log("dataquiz: ", dataQuiz)
+    let payload: Payload = {
+      quizId: +quizId,
+      answers: []
+    }
+    let answers: Answer[] = [];
+    if (dataQuiz && dataQuiz.length > 0) {
+      dataQuiz.forEach((question: any) => {
+        let questionId = question.id;
+        let userAnswerId: any[] = [];
+        question.answers.forEach((item: any) => {
+          console.log("itemm:", item)
+          if (item.isSelected === true) {
+            userAnswerId.push(item.id)
+          }
+        })
+        answers.push({
+          questionId: +questionId,
+          userAnswerId: userAnswerId
+        })
+      })
+      payload.answers = answers
+      setAnswerApi(answers)
+    }
+  }
 
   const handleNextQuiz = () => {
     if (indexQuiz === detailDataQuiz.length - 1) return;
@@ -32,13 +103,39 @@ const DetailQuiz = (props: any) => {
     if (indexQuiz === 0) return;
     setIndexQuiz(indexQuiz - 1);
   };
-  console.log("checker data:", detailDataQuiz);
+
+  const resResult = async () => {
+    const res = await fetch("http://localhost:8081/api/v1/quiz-submit", {
+      method: "POST",
+      body: JSON.stringify({
+        quizId: +quizId,
+        answers: answerApi
+      }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session}`
+      },
+    });
+    var data = await res.json();
+    if (data) {
+      console.log(data.DT)
+      setResult(data.DT)
+    }
+  }
+
+  console.log("dataQuiz : ", dataQuiz)
+
+  useEffect(() => {
+    resResult()
+    console.log("indexQuiz ", indexQuiz)
+  }, [answerApi, indexQuiz])
+
   return (
     <Container>
       <h1>Quiz số {detailDataQuiz.quizId}</h1>
       <Box
         sx={{
-          border: "1px solid #ccc",
+          border: "1px solid var(--fg)",
           marginTop: "20px",
           display: "flex",
           alignItems: "center",
@@ -48,7 +145,7 @@ const DetailQuiz = (props: any) => {
         <Typography
           sx={{
             marginBottom: "20px",
-            height: { md: "5px", lg: "5px", xs: "65px" },
+            height: { md: "5px", lg: "5px", xs: "50px" },
             padding: "10px",
           }}
         >
@@ -61,8 +158,8 @@ const DetailQuiz = (props: any) => {
         <Grid container spacing={2}>
           <Grid item xs={12} md={8}>
             <Box>
-              <Typography variant="h5" sx={{ marginBottom: "20px" }}>
-                Câu hỏi: {detailDataQuiz[indexQuiz].description}
+              <Typography variant="h5" sx={{ margin: "20px 0" }}>
+                Câu hỏi: {dataQuiz[indexQuiz].description}
               </Typography>
               <Box
                 sx={{
@@ -72,7 +169,7 @@ const DetailQuiz = (props: any) => {
                 }}
               >
                 <img
-                  src={`data:image/png;base64,${detailDataQuiz[indexQuiz].imageFile}`}
+                  src={`data:image/png;base64,${dataQuiz[indexQuiz].imageFile}`}
                   width={"50%"}
                   height={"50%"}
                 />
@@ -85,12 +182,8 @@ const DetailQuiz = (props: any) => {
               <Box>
                 <FormControl>
                   <RadioGroup
-                    aria-labelledby="demo-controlled-radio-buttons-group"
-                    name="controlled-radio-buttons-group"
-                    value={value}
-                    onChange={handleChange}
                   >
-                    {detailDataQuiz[indexQuiz].answers.map(
+                    {dataQuiz[indexQuiz].answers.map(
                       (quiz: any, index: number) => {
                         return (
                           <div>
@@ -99,9 +192,15 @@ const DetailQuiz = (props: any) => {
                               control={
                                 <Radio
                                   color="error"
+                                  value={quiz.description}
+                                  checked={quiz.isSelected}
                                   checkedIcon={<CircleIcon />}
+                                  onChange={(e: any) => {
+                                    handleCheckbox(e, `${dataQuiz[indexQuiz].id}`, `${quiz.id}`)
+                                  }}
                                 />
                               }
+
                               label={quiz.description}
                             />
                           </div>
@@ -126,46 +225,34 @@ const DetailQuiz = (props: any) => {
                     Prev
                   </Button>
                 )}
-                {indexQuiz === detailDataQuiz.length - 1 ? (
+                {indexQuiz === dataQuiz.length - 1 ? (
                   <Button disabled>Next</Button>
                 ) : (
                   <Button variant="contained" onClick={() => handleNextQuiz()}>
                     Next
                   </Button>
                 )}
-                {indexQuiz === detailDataQuiz.length - 1 && (
-                  <Button>Submit</Button>
+                {indexQuiz === dataQuiz.length - 1 && (
+                  <Button onClick={() => {
+                    handleSubmit();
+                    handleOpen()
+                  }}>Submit</Button>
                 )}
               </Box>
             </Box>
           </Grid>
           <Grid item xs={12} md={4}>
-            <Box
-              sx={{ border: "1px solid red", width: "100%", height: "500px" }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  gap: "15px",
-                  alignItems: "center",
-                  borderBottom: "1px solid #000",
-                }}
-              >
-                <Box sx={{ display: "flex", flexDirection: "column" }}>
-                  <CheckIcon />
-                  Submit
-                </Box>
-                <Box>01 : 20 : 40</Box>
-                <Box sx={{ display: "flex", flexDirection: "column" }}>
-                  <ReplayIcon />
-                  Requiz
-                </Box>
-              </Box>
-              <Box></Box>
-            </Box>
+            <RightContent open={open} setOpen={setOpen} countCorrect={result.countCorrect}
+              countTotal={result.countTotal}
+              handleSubmit={handleSubmit}
+              handleOpen={handleOpen}
+            />
           </Grid>
         </Grid>
       </Box>
+      {open === true && <ModalQuizResult open={open} setOpen={setOpen}
+        countCorrect={result.countCorrect}
+        countTotal={result.countTotal} />}
     </Container>
   );
 };

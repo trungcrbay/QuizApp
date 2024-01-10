@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Montserrat } from 'next/font/google'
 import "./globals.css";
-import AppHeader from "@/component/header/header.module";
 import NextAuthWrapper from "@/lib/next.auth.wrapper";
-import ThemeRegistry from "./themes/ThemeRegistry";
-
 
 export const metadata: Metadata = {
   title: "Create Next App",
   description: "QuizApp",
 };
+
+const montserrat = Montserrat({
+  weight: '300',
+  subsets: ['latin'],
+  display: 'swap',
+})
 
 export default function RootLayout({
   children,
@@ -17,10 +20,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html suppressHydrationWarning>
+    <html suppressHydrationWarning lang="en" className={montserrat.className}>
       <body>
         <NextAuthWrapper>
-            {children}
+          {children}
         </NextAuthWrapper>
       </body>
     </html>
