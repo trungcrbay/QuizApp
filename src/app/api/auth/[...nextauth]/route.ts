@@ -3,6 +3,20 @@ import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { AuthOptions } from "next-auth";
+import { sendRequest } from "@/utils/api";
+
+interface IBackendRes<T> {
+  error?: string | string[];
+  message: string;
+  statusCode: number | string;
+  data?: T;
+}
+interface JWT {
+  access_token: string;
+  refresh_token: string;
+  // user: IUser;
+}
+
 export const authOptions: AuthOptions = {
   // Configure one or more authentication providers
   secret: process.env.NO_SECRET,
@@ -15,23 +29,33 @@ export const authOptions: AuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        const res = await fetch("http://localhost:8081/api/v1/login", {
+        // const res = await fetch("http://localhost:8081/api/v1/login", {
+        //   method: "POST",
+        //   body: JSON.stringify({
+        //     email: credentials?.email,
+        //     password: credentials?.password,
+        //   }),
+        //   headers: { "Content-Type": "application/json" },          
+        // });
+
+
+        const res = await sendRequest<IBackendRes<JWT>>({
+          url: `http://localhost:8081/api/v1/login`,
           method: "POST",
-          body: JSON.stringify({
+          body: {
             email: credentials?.email,
             password: credentials?.password,
-          }),
-          headers: { "Content-Type": "application/json" },
-        });
-        const userInfo = await res.json();
+          },
+        })
+        // const userInfo = await res.json();
 
         // If no error and we have userInfo data, return it
-        if (userInfo && userInfo.DT) {
-          return userInfo.DT as any;
+        if (res && res.DT) {
+          return res.DT as any;
         }
         // Return null if user data could not be retrieved
         else {
-          return null;
+          throw new Error(res.message as string);
         }
       },
     }),
@@ -45,28 +69,39 @@ export const authOptions: AuthOptions = {
     })
   ],
   callbacks: {
-    jwt({ token, trigger, user, account, profile }) {
-      console.log("profile: ",profile) //contain main data user github
-      console.log("account: ",account) //contain data user github
+    async jwt({ token, user, account, profile, trigger }) {
+      if (trigger === "signIn" && account?.provider !== "credentials") {
+        //crate account
+        const res = await sendRequest<IBackendRes<JWT>>({
+          url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/social-media`,
+          method: "POST",
+          body: {
+            type: account?.provider.toLocaleUpperCase(),
+            username: user.email,
+          },
+        });
+        console.log("check res data:")
+        if (res.data) {
+          token.access_token = res.data?.access_token;
+          token.refresh_token = res.data?.refresh_token;
+          token.user = res.data.user;
+        }
+      }
       if (trigger === "signIn" && account?.provider === "credentials") {
         //@ts-ignore
-        token.access_token = user.access_token;
+        token.access_token = user?.access_token;
         //@ts-ignore
-        token.refresh_token = user.refresh_token;
-        token.email = user.email;
+        token.refresh_token = user?.refresh_token;
         //@ts-ignore
-        token.role=  user.role;
+        token.role = user.role;
       }
       return token;
     },
-    session({ session, user, token }) {
+    async session({ session, token, user }) {
       if (token) {
-        //@ts-ignore
         session.access_token = token.access_token;
-        //@ts-ignore
         session.refresh_token = token.refresh_token;
         session.role = token.role;
-
       }
       return session;
     },

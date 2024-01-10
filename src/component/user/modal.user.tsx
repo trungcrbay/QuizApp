@@ -7,6 +7,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import { Input } from '@mui/material';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import CloseIcon from '@mui/icons-material/Close';
 
 const style = {
     position: 'absolute' as 'absolute',
@@ -20,18 +22,60 @@ const style = {
     p: 4,
 };
 
+interface UserProfle {
+    username: string;
+    image: File | null;
+}
+
 const ModalProfile = (props: any) => {
     const { open, handleClose } = props;
     const { data: session } = useSession();
     console.log("session:: ", session)
     const [editUsername, setEditUsername] = React.useState<boolean>(false)
-    const [username,setUsername] = React.useState(null);
+    const [username, setUsername] = React.useState("");
+    const [accessToken, setAccessToken] = React.useState("");
+    const [image, setImage] = React.useState<File | null>(null);
     React.useEffect(() => {
-        setUsername(session?.user.username)
-    },[session?.user])
-    const onChangeUsername = (e : any) => {
-        setUsername(e.target.value)
+        setUsername(session?.user.email);
+        setImage(session?.user.image);
+        setAccessToken(session.access_token);
+    }, [])
+
+    const onChangeUsername = () => {
         console.log("set username: ", username);
+        console.log("set image: ", image);
+    }
+
+
+    const handleDataChange = (event: any) => {
+        if (event.target.files && event.target.files[0]) {
+            setImage(URL.createObjectURL(event.target.files[0]))
+        }
+    }
+
+    const postUpdateProfile = async ({ username, image }: UserProfle) => {
+        const formData = new FormData();
+        formData.append("username", username);
+        //@ts-ignore
+        formData.append("userImage", image);
+
+        const res = await fetch(`http://localhost:8081/api/v1/profile`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                //ts-ignore
+                Authorization: `Bearer ${accessToken}`,
+            },
+            body: formData,
+        });
+
+        const data = await res.json();
+        console.log("check data: ", data)
+    };
+
+    const handleUpdateProfile =async () => {
+        console.log("check data before upload: ", username, image)
+        await postUpdateProfile({ username, image })
     }
     return (
         <div>
@@ -42,19 +86,27 @@ const ModalProfile = (props: any) => {
                 aria-describedby="modal-modal-description"
             >
                 <Box sx={style}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2">
-                        Profile
-                    </Typography>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <Typography id="modal-modal-title" variant="h6" component="h2">
+                            Profile
+                        </Typography>
+                        <CloseIcon sx={{ cursor: 'pointer' }}
+                            onClick={() => handleClose()} />
+                    </Box>
                     {editUsername === false ?
                         <Typography id="modal-modal-description" sx={{ mt: 2, display: 'flex', gap: '5px' }}>
-                            Email: {session?.user.email}
-                            <EditIcon onClick={() => setEditUsername(true)} style={{cursor:'pointer'}}/>
+                            Email: {username}
+                            <EditIcon onClick={() => setEditUsername(true)} style={{ cursor: 'pointer' }} />
                         </Typography>
-                        : <Box sx={{display:'flex',gap:'5px'}}>
-                            <Input value={username} onChange={(e) => onChangeUsername(e.target.value)}/>
-                            <Button variant="contained" 
-                            onClick={() => setEditUsername(false)}
-                            style={{height:'30px'}}
+                        : <Box sx={{ display: 'flex', gap: '5px' }}>
+                            <Input value={username} onChange={(e) => {
+                                setUsername(e.target.value);
+                            }} />
+                            <Button variant="contained"
+                                onClick={() => {
+                                    setEditUsername(false)
+                                }}
+                                style={{ height: '30px' }}
                             >OK</Button>
                         </Box>}
                     <Typography id="modal-modal-description" sx={{ mt: 2, display: 'flex', gap: '5px' }}>
@@ -62,9 +114,22 @@ const ModalProfile = (props: any) => {
                     </Typography>
                     <Typography id="modal-modal-description" sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
                         <img
-                            src={`data:image/jpeg;base64, ${session?.user.image}`} />
+                            src={`data:image/jpeg;base64, ${image}`} />
                     </Typography>
-                    <Button variant="contained">Update</Button>
+                    <Box sx={{ display: 'flex', gap: '10px' }}>
+                        <Button variant="contained" sx={{ height: '30px' }}>
+                            <label htmlFor='uploadImg' style={{ display: 'flex', gap: '5px' }}>
+                                <CloudUploadIcon />
+                                Upload
+                            </label>
+                        </Button>
+
+                        <input type='file' id='uploadImg' style={{ display: 'none' }} onChange={handleDataChange} />
+                        <Button style={{ height: '30px' }} variant="contained" onClick={() => {
+                            onChangeUsername()
+                            handleUpdateProfile()
+                        }}>Update</Button>
+                    </Box>
                 </Box>
             </Modal>
         </div>

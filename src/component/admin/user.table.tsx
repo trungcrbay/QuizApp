@@ -7,6 +7,7 @@ import ModalViewUser from "./moda.view.user";
 import ModalUpdateUser from "./modal.update.user";
 import ModalAddNewUser from "./modal.add.user";
 import { useRouter } from 'next/navigation'
+import { sendRequest } from "@/utils/api";
 
 interface DataType {
   key: string;
