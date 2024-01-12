@@ -10,66 +10,66 @@ const AdminDashboard = (props: any) => {
     <>
       <Row gutter={[16, 16]}>
         <Col span={12}>
-          <Card style={{ width: 300 }}>
-            <h2>Total User</h2>
+          <Card style={{ width: 300 ,background:'#98DBE9' , fontSize:'20px'}}>
+            <p>Total User</p>
             <Divider />
-            <h2 >
+            <p >
               <CountUp
                 duration={2.75}
                 end={dataDashboard.users.countUsers}
               ></CountUp>
-            </h2>
+            </p>
           </Card>
         </Col>
         <Col span={12}>
-          <Card style={{ width: 300 }}>
-            <h2>Total Admin</h2>
+          <Card style={{ width: 300,background:"#FBBCC0", fontSize:'20px' }}>
+            <p>Total Admin</p>
             <Divider />
-            <h2>
+            <p>
               <CountUp
                 duration={2.75}
                 end={dataDashboard.users.countAdmin}
               ></CountUp>
-            </h2>
+            </p>
           </Card>
         </Col>
       </Row>
       <Divider />
       <Row gutter={[16, 16]}>
         <Col span={8}>
-          <Card style={{ width: 300 }}>
-            <h2>Total Quiz</h2>
+          <Card style={{ width: 300,background:'#B8AEFF', fontSize:'20px' }}>
+            <p>Total Quiz</p>
             <Divider />
-            <h2>
+            <p>
               <CountUp
                 duration={2.75}
                 end={dataDashboard.others.countQuiz}
               ></CountUp>
-            </h2>
+            </p>
           </Card>
         </Col>
         <Col span={8}>
-          <Card style={{ width: 300 }}>
-            <h2>Total Question</h2>
+          <Card style={{ width: 300,background:'#FBBCC0', fontSize:'20px' }}>
+            <p>Total Question</p>
             <Divider />
-            <h2>
+            <p>
               <CountUp
                 duration={2.75}
                 end={dataDashboard.others.countQuestions}
               ></CountUp>
-            </h2>
+            </p>
           </Card>
         </Col>
         <Col span={8}>
-          <Card style={{ width: 300 }}>
-            <h2>Total Answer</h2>
+          <Card style={{ width: 300,background:'#B8FBC3', fontSize:'20px' }}>
+            <p>Total Answer</p>
             <Divider />
-            <h2>
+            <p>
               <CountUp
                 duration={2.75}
                 end={dataDashboard.others.countAnswers}
               ></CountUp>
-            </h2>
+            </p>
           </Card>
         </Col>
       </Row>

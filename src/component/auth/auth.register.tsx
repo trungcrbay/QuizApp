@@ -1,8 +1,6 @@
 'use client'
 import { Avatar, Box, Button, Divider, Grid, TextField, Typography } from "@mui/material";
 import LockIcon from '@mui/icons-material/Lock';
-import GitHubIcon from '@mui/icons-material/GitHub';
-import GoogleIcon from '@mui/icons-material/Google';
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import InputAdornment from '@mui/material/InputAdornment';
@@ -10,9 +8,23 @@ import IconButton from '@mui/material/IconButton';
 import React, { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation'
 import { useSession, signIn, signOut } from "next-auth/react"
+import Alert from '@mui/material/Alert';
 import Link from 'next/link'
+import CheckIcon from '@mui/icons-material/Check';
+import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 
-const AuthSignIn = (props: any) => {
+interface IRegister {
+    email: string;
+    username: string;
+    password: string
+}
+
+interface State extends SnackbarOrigin {
+    open: boolean;
+}
+
+
+const AuthRegister = (props: any) => {
     //@ts-ignore
     const { data, session } = useSession();
     const router = useRouter()
@@ -21,24 +33,63 @@ const AuthSignIn = (props: any) => {
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
+    const [email, setEmail] = useState<string>("");
 
     const [isErrorUsername, setIsErrorUsername] = useState<boolean>(false);
     const [isErrorPassword, setIsErrorPassword] = useState<boolean>(false);
+    const [isErrorEmail, setIsErrorEmail] = useState<boolean>(false);
 
     const [errorUsername, setErrorUsername] = useState<string>("");
     const [errorPassword, setErrorPassword] = useState<string>("");
+    const [errorEmail, setErrorEmail] = useState<string>("");
 
+    const [state, setState] = React.useState<State>({
+        open: false,
+        vertical: 'top',
+        horizontal: 'center',
+    });
+    const { vertical, horizontal, open } = state;
 
-    const handleSubmit = () => {
+    const handleClick = (newState: SnackbarOrigin) => () => {
+        setState({ ...newState, open: true });
+    };
+
+    const handleClose = () => {
+        setState({ ...state, open: false });
+    };
+
+    const registerParticipant = async ({ email, username, password }: IRegister) => {
+        const res = await fetch(`http://localhost:8081/api/v1/register`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                email: email,
+                username: username,
+                password: password,
+            }),
+        });
+        const data = await res.json()
+        if (data) {
+            handleClick({ vertical: 'top', horizontal: 'center' })
+            console.log("res: ", data)
+        }
+    };
+
+    const handleSubmit = async () => {
         setIsErrorUsername(false);
         setIsErrorPassword(false);
+        setIsErrorEmail(false);
         setErrorUsername("");
         setErrorPassword("");
+        setErrorEmail("");
 
-        signIn('credentials', {
-            email: username,
-            password: password
-        })
+        if (!email) {
+            setIsErrorEmail(true);
+            setErrorEmail("Email is not empty.")
+            return;
+        }
 
         if (!username) {
             setIsErrorUsername(true);
@@ -50,13 +101,15 @@ const AuthSignIn = (props: any) => {
             setErrorPassword("Password is not empty.")
             return;
         }
-        console.log(">>> check username: ", username, ' pass: ', password)
 
+        console.log(">>> check username: ", username, ' pass: ', password, ' email: ', email)
+        registerParticipant({ email, username, password })
+        
     }
 
-    if (data) {
-        router.push('/')
-    }
+    // if (data) {
+    //     router.push('/')
+    // }
 
     const keyDownHandler = (event: React.KeyboardEvent) => {
         console.log(event.key)
@@ -109,9 +162,22 @@ const AuthSignIn = (props: any) => {
                             </Avatar>
 
                             <Typography component="h1">
-                                Sign in
+                                Register
                             </Typography>
                         </Box>
+
+                        <TextField
+                            onChange={(event) => setEmail(event.target.value)}
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            label="Email"
+                            name="email"
+                            autoFocus
+                            error={isErrorEmail}
+                            helperText={errorEmail}
+                        />
 
                         <TextField
                             onChange={(event) => setUsername(event.target.value)}
@@ -121,7 +187,6 @@ const AuthSignIn = (props: any) => {
                             fullWidth
                             label="Username"
                             name="username"
-                            autoFocus
                             error={isErrorUsername}
                             helperText={errorUsername}
                         />
@@ -153,46 +218,32 @@ const AuthSignIn = (props: any) => {
                             fullWidth
                             variant="contained"
                             color="primary"
-                            onClick={handleSubmit}
+                            onClick={() => {
+                                // handleClick({ vertical: 'top', horizontal: 'center' })
+                                handleSubmit()
+                            }
+                            }
+
                         >
-                            Sign In
+                            Register
                         </Button>
-                        <Divider>Or using</Divider>
-                        <Box
-                            sx={{
-                                display: "flex",
-                                justifyContent: "center",
-                                gap: "25px",
-                                mt: 3
-                            }}
-                        >
-                            <Avatar
-                                sx={{
-                                    cursor: "pointer",
-                                    bgcolor: "orange"
-                                }}
-
-                            >
-                                <GitHubIcon
-                                    onClick={() => signIn('github')}
-                                    titleAccess="Login with Github" />
-                            </Avatar>
-
-                            <Avatar
-                                sx={{
-                                    cursor: "pointer",
-                                    bgcolor: "orange"
-                                }}
-                            >
-                                < GoogleIcon titleAccess="Login with Google" 
-                                onClick={() => signIn('google')}
-                                />
-                            </Avatar>
+                        <Box sx={{ marginTop: '15px', display: 'flex', gap: '10px' }}>
+                            <span>Already had an account?</span>
+                            <Link href={'/signin'} style={{ textDecoration: 'none', color: '#FF0000' }}>Log in</Link>
                         </Box>
-                        <Box sx={{marginTop:'15px',display:'flex',gap:'10px'}}>
-                            <span>Have you not had an account yet?</span>
-                            <Link href={'/register'} style={{textDecoration:'none',color:'#FF0000'}}>Register</Link>
-                        </Box>
+                        <Snackbar
+                            anchorOrigin={{ vertical, horizontal }}
+                            open={open}
+                            sx={{ background: 'transparent' }}
+                            autoHideDuration={3000}
+                            onClose={handleClose}
+                            message={
+                                <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
+                                    Create new user successfully!
+                                </Alert>
+                            }
+                            key={vertical + horizontal}
+                        />
                     </div>
                 </Grid>
             </Grid>
@@ -202,4 +253,4 @@ const AuthSignIn = (props: any) => {
     )
 }
 
-export default AuthSignIn;
+export default AuthRegister;

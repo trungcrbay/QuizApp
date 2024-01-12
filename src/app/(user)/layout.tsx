@@ -4,6 +4,8 @@ import AppHeader from "@/component/header/header.module";
 import NextAuthWrapper from "@/lib/next.auth.wrapper";
 import ThemeRegistry from "../themes/ThemeRegistry";
 import NextTopLoader from 'nextjs-toploader';
+import Trans from "@/utils/trans";
+
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -25,6 +27,7 @@ export default function UserLayout({
             showSpinner={false}
             height={2}
           />
+          {/* <Trans /> */}
           {children}
         </ThemeRegistry>
       </body>

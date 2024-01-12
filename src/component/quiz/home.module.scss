@@ -1,0 +1,35 @@
+@mixin screen($device) {
+    @if $device==tablet {
+        @media (max-width: 991px) {
+            @content;
+        }
+    }
+
+    @if $device==mobile {
+        @media (max-width: 450px) {
+            @content;
+        }
+    }
+
+    @if $device==pc {
+        @media (min-width: 992px) {
+            @content;
+        }
+    }
+}
+
+.home_img {
+    width     : 100%;
+    height    : 250px;
+    object-fit: cover;
+
+    img {
+        @include screen(mobile) {
+            display: none;
+        }
+    }
+}
+
+.texter{
+    color:red;
+}

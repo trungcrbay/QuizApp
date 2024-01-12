@@ -36,20 +36,16 @@ const HomePage = () => {
               transition={{ delay: 0.5, type: "spring", stiffness: 120 }}
             >Welcome to Quiz Web</motion.h1>
 
-            <Box sx={{
-              marginTop: '20px',
-            }}>
+            <div className={classes.home_img}>
               <img src="/homequiz.png" />
-            </Box>
+            </div>
 
             <motion.div
               initial={{ x: '-100vw' }}
               animate={{ x: 0 }}
               transition={{ delay: 0.5, type: "spring", stiffness: 120 }}
               style={{ width: '100%', marginTop: '40px', textAlign: 'center' }}>
-              <h2 style={{
-                width: '600px', fontSize: '20px', margin: '0 auto'
-              }}>If you get a high score, you probably spend
+              <h2 className={classes.text_score}>If you get a high score, you probably spend
                 <em> way </em>
                 too much time on Wikipedia.</h2>
             </motion.div>
@@ -59,9 +55,8 @@ const HomePage = () => {
               animate={{ x: 0 }}
               transition={{ delay: 0.5, type: "spring", stiffness: 120 }}
               style={{ width: '100%', marginTop: '20px', textAlign: 'center' }}>
-              <h2 style={{
-                width: '800px', fontSize: '20px', margin: '0 auto'
-              }}>There are a few questions and a break for refreshments in the middle.
+              <h2
+                className={classes.text_introduce}>There are a few questions and a break for refreshments in the middle.
                 (You'll have to provide your own snacks, sorry.)</h2>
             </motion.div>
             <motion.div
@@ -82,7 +77,7 @@ const HomePage = () => {
                 transition={{
                   duration: 0.3
                 }}
-                style={{ padding: '15px', borderRadius: '5px', background: 'var(--bg)', border: '1px solid #000', cursor: 'pointer', marginTop: '10px' }}
+                className={classes.start_button}
               >
                 <Link href="/quiz" style={{ color: 'var(--fg)', textDecoration: 'none' }} ref={linkRef}> Start Quiz</Link>
               </motion.button>

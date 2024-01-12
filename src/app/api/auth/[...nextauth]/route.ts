@@ -48,7 +48,8 @@ export const authOptions: AuthOptions = {
           },
         })
         // const userInfo = await res.json();
-
+        const password = credentials?.password;
+        console.log("passsowrod: ",credentials?.password);
         // If no error and we have userInfo data, return it
         if (res && res.DT) {
           return res.DT as any;

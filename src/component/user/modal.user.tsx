@@ -9,6 +9,7 @@ import Button from '@mui/material/Button';
 import { Input } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import CloseIcon from '@mui/icons-material/Close';
+import ModalChangePassword from './modal.pass';
 
 const style = {
     position: 'absolute' as 'absolute',
@@ -35,6 +36,8 @@ const ModalProfile = (props: any) => {
     const [username, setUsername] = React.useState("");
     const [accessToken, setAccessToken] = React.useState("");
     const [image, setImage] = React.useState<File | null>(null);
+    const [isChangePass,setIsChangePass] = React.useState<boolean>(false);
+
     React.useEffect(() => {
         setUsername(session?.user.email);
         setImage(session?.user.image);
@@ -49,6 +52,7 @@ const ModalProfile = (props: any) => {
 
     const handleDataChange = (event: any) => {
         if (event.target.files && event.target.files[0]) {
+            //@ts-ignore
             setImage(URL.createObjectURL(event.target.files[0]))
         }
     }
@@ -73,7 +77,7 @@ const ModalProfile = (props: any) => {
         console.log("check data: ", data)
     };
 
-    const handleUpdateProfile =async () => {
+    const handleUpdateProfile = async () => {
         console.log("check data before upload: ", username, image)
         await postUpdateProfile({ username, image })
     }
@@ -112,6 +116,13 @@ const ModalProfile = (props: any) => {
                     <Typography id="modal-modal-description" sx={{ mt: 2, display: 'flex', gap: '5px' }}>
                         Role: {session?.role}
                     </Typography>
+                    <Button variant="contained"
+                        onClick={() => {
+                            setEditUsername(false);
+                            setIsChangePass(true);
+                        }}
+                        style={{ height: '30px' ,marginTop:'20px'}}
+                    >Password</Button>
                     <Typography id="modal-modal-description" sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
                         <img
                             src={`data:image/jpeg;base64, ${image}`} />

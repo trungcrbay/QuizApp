@@ -1,0 +1,102 @@
+@mixin screen($device) {
+    @if $device==tablet {
+        @media (max-width: 991px) {
+            @content;
+        }
+    }
+
+    @if $device==mobile {
+        @media (max-width: 450px) {
+            @content;
+        }
+    }
+
+    @if $device==pc {
+        @media (min-width: 992px) {
+            @content;
+        }
+    }
+}
+
+.homepage {
+    background-image   : var(--background);
+    width              : 100%;
+    height             : 100vh;
+    background-position: center center;
+    background-repeat  : no-repeat;
+    background-size    : cover;
+
+    &::after {
+        content   : "";
+        position  : absolute;
+        background: #242526;
+        inset     : 0;
+        z-index   : -1;
+        opacity   : 0.3;
+    }
+}
+
+.text_score {
+    @include screen(pc) {
+        width    : 600px;
+        font-size: 20px;
+        margin   : 0 auto;
+    }
+
+    @include screen(mobile) {
+        width: 90%;
+        margin: 0 auto;
+        font-size: 14px;
+    }
+}
+
+.text_introduce {
+    @include screen(pc) {
+        width    : 800px;
+        font-size: 20px;
+        margin   : 0 auto;
+    }
+
+    @include screen(mobile) {
+        width: 90%;
+        margin   : 0 auto;
+        font-size: 14px;
+    }
+}
+
+.content {
+    text-align : center;
+    padding-top: 50px;
+}
+
+.home_img {
+    width     : 100%;
+    height    : 250px;
+    object-fit: cover;
+    margin-top: 20px;
+
+    @include screen(mobile) {
+        height: 100%;
+    }
+
+    img {
+        @include screen(mobile) {
+            width: 90%;
+        }
+    }
+}
+
+.start_button{
+    padding: 15px;
+    border-radius: 5px;
+    background: var(--bg);
+    border: 1px solid #000;
+    cursor: pointer;
+    margin-top: 10px;
+
+    @include screen(mobile) {
+       padding: 10px;
+    }
+}
+
+/*# sourceMappingURL=globals.css.map */

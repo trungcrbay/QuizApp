@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -11,8 +11,10 @@ import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import Tooltip from "@mui/material/Tooltip";
 import Avatar from "@mui/material/Avatar";
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
 import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 import Drawer from '@mui/material/Drawer';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import QuizIcon from '@mui/icons-material/Quiz';
@@ -24,6 +26,10 @@ type Anchor = "right";
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import ModalProfile from "../user/modal.user";
+import { styled } from '@mui/material/styles';
+import Switch, { SwitchProps } from '@mui/material/Switch';
+import SettingsIcon from '@mui/icons-material/Settings';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 
 const AppHeader = () => {
@@ -34,6 +40,55 @@ const AppHeader = () => {
   }
   const router = useRouter()
   const { theme, setTheme } = useTheme();
+  const themeRef = useRef(null);
+  console.log("check ref: ", themeRef.current)
+  const MaterialUISwitch = styled(Switch)(({ theme }) => ({
+    width: 62,
+    height: 34,
+    padding: 7,
+    '& .MuiSwitch-switchBase': {
+      margin: 1,
+      padding: 0,
+      transform: 'translateX(6px)',
+      '&.Mui-checked': {
+        color: '#fff',
+        transform: 'translateX(22px)',
+        '& .MuiSwitch-thumb:before': {
+          backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
+            '#fff',
+          )}" d="M4.2 2.5l-.7 1.8-1.8.7 1.8.7.7 1.8.6-1.8L6.7 5l-1.9-.7-.6-1.8zm15 8.3a6.7 6.7 0 11-6.6-6.6 5.8 5.8 0 006.6 6.6z"/></svg>')`,
+        },
+        '& + .MuiSwitch-track': {
+          opacity: 1,
+          backgroundColor: theme.palette.mode === 'dark' ? '#8796A5' : '#aab4be',
+        },
+      },
+    },
+    '& .MuiSwitch-thumb': {
+      backgroundColor: theme.palette.mode === 'dark' ? '#003892' : '#001e3c',
+      width: 32,
+      height: 32,
+      '&::before': {
+        content: "''",
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        left: 0,
+        top: 0,
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
+        backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
+          '#fff',
+        )}" d="M9.305 1.667V3.75h1.389V1.667h-1.39zm-4.707 1.95l-.982.982L5.09 6.072l.982-.982-1.473-1.473zm10.802 0L13.927 5.09l.982.982 1.473-1.473-.982-.982zM10 5.139a4.872 4.872 0 00-4.862 4.86A4.872 4.872 0 0010 14.862 4.872 4.872 0 0014.86 10 4.872 4.872 0 0010 5.139zm0 1.389A3.462 3.462 0 0113.471 10a3.462 3.462 0 01-3.473 3.472A3.462 3.462 0 016.527 10 3.462 3.462 0 0110 6.528zM1.665 9.305v1.39h2.083v-1.39H1.666zm14.583 0v1.39h2.084v-1.39h-2.084zM5.09 13.928L3.616 15.4l.982.982 1.473-1.473-.982-.982zm9.82 0l-.982.982 1.473 1.473.982-.982-1.473-1.473zM9.305 16.25v2.083h1.389V16.25h-1.39z"/></svg>')`,
+      },
+    },
+  }));
+  const [lang, setLang] = React.useState('');
+
+  const handleChange = (event: SelectChangeEvent) => {
+    setLang(event.target.value);
+  };
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -119,6 +174,19 @@ const AppHeader = () => {
             alignItems: 'center',
             gap: '3px'
           }}>
+
+            <SettingsIcon />
+            <Button>
+              <Link href={'/quiz'} style={{ color: '#000', textDecoration: 'none' }}>
+                Password
+              </Link>
+            </Button>
+          </Box>
+          <Box sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '3px'
+          }}>
             <LogoutIcon />
             <Button onClick={() => signOut()} style={{ color: "#000" }}>
               Logout
@@ -158,21 +226,40 @@ const AppHeader = () => {
               <Link href={'/'} style={{ color: 'var(--fg)', textDecoration: 'none' }} shallow >QuizzApp</Link>
             </Typography>
 
+            {/* Dark Light Mode */}
+
             {theme === "light" ? (
-              <Tooltip title="Dark Mode" style={{ cursor: "pointer" }}>
-                <Brightness7Icon
+
+              <>
+                {/* <Brightness4Icon
                   onClick={() => setTheme("dark")}
-                  sx={{ color: "var(--fg)" }}
+                  sx={{
+                    display: {
+                      md: 'none',
+                      lg: 'none',
+                      xs: 'block'
+                    }, color: "var(--fg)"
+                  }}
+                /> */}
+                <MaterialUISwitch onClick={() => setTheme("dark")}
+                  checked={false}
+                  ref={themeRef}
                 />
-              </Tooltip>
+              </>
             ) : (
-              <Tooltip title="Light Mode" style={{ cursor: "pointer" }}>
-                <Brightness4Icon
-                  onClick={() => setTheme("light")}
-                  sx={{ color: "var(--fg)" }}
+              <>
+                {/* <Brightness7Icon
+                    onClick={() => setTheme("light")}
+                    sx={{ color: "var(--fg)" }}
+                  /> */}
+                <MaterialUISwitch onClick={() => setTheme("light")} checked={true}
+                  ref={themeRef}
                 />
-              </Tooltip>
+              </>
+
             )}
+
+            {/* End Dark Light Mode */}
 
             <Box sx={{
               display: {
@@ -249,16 +336,16 @@ const AppHeader = () => {
                   Login
                 </Button>
                 // </Link>
-                
+
               )}
             </Box>
-            {openModalUser === true && 
-            <ModalProfile 
-            open={openModalUser} 
-            setOpen={setOpenModalUser}
-            handleClose={handleCloseModal}
-            handleOpen={handleOpenModal}
-            />}
+            {openModalUser === true &&
+              <ModalProfile
+                open={openModalUser}
+                setOpen={setOpenModalUser}
+                handleClose={handleCloseModal}
+                handleOpen={handleOpenModal}
+              />}
           </Toolbar>
         </AppBar>
       </Box>
