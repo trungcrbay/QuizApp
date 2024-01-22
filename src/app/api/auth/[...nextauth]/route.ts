@@ -86,6 +86,7 @@ export const authOptions: AuthOptions = {
           token.access_token = res.data?.access_token;
           token.refresh_token = res.data?.refresh_token;
           token.user = res.data.user;
+
         }
       }
       if (trigger === "signIn" && account?.provider === "credentials") {

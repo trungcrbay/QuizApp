@@ -1,0 +1,11 @@
+@media (max-width: 450px) {
+  .ant-pagination {
+    width: 500px;
+    overflow: auto;
+  }
+}
+@media (max-width: 450px) {
+  .ant-layout-sider {
+    display: block;
+  }
+}/*# sourceMappingURL=admin.css.map */

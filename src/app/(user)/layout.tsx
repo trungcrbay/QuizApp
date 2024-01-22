@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import AppHeader from "@/component/header/header.module";
-import NextAuthWrapper from "@/lib/next.auth.wrapper";
 import ThemeRegistry from "../themes/ThemeRegistry";
 import NextTopLoader from 'nextjs-toploader';
-import Trans from "@/utils/trans";
-
 
 export const metadata: Metadata = {
   title: "Create Next App",

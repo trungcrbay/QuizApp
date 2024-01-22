@@ -11,13 +11,6 @@ interface FieldType {
   password?: string;
   remember?: string;
 }
-interface User {
-  email: string;
-  password: string;
-  username: string;
-  role: string;
-  file: File;
-}
 
 const onFinish = (values: any) => {
   console.log("Success:", values);
@@ -26,6 +19,8 @@ const onFinish = (values: any) => {
 const onFinishFailed = (errorInfo: any) => {
   console.log("Failed:", errorInfo);
 };
+
+type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
 const ModalAddNewUser = (props: any) => {
   const { open, setOpen } = props;
@@ -58,39 +53,21 @@ const ModalAddNewUser = (props: any) => {
     },
   };
 
-  const  resizeImage = (base64Str : string, maxWidth = 400, maxHeight = 350) =>  {
-    return new Promise((resolve) => {
-      let img = new Image()
-      img.src = base64Str
-      img.onload = () => {
-        let canvas = document.createElement('canvas')
-        const MAX_WIDTH = maxWidth
-        const MAX_HEIGHT = maxHeight
-        let width = img.width
-        let height = img.height
-  
-        if (width > height) {
-          if (width > MAX_WIDTH) {
-            height *= MAX_WIDTH / width
-            width = MAX_WIDTH
-          }
-        } else {
-          if (height > MAX_HEIGHT) {
-            width *= MAX_HEIGHT / height
-            height = MAX_HEIGHT
-          }
-        }
-        canvas.width = width
-        canvas.height = height
-        let ctx = canvas.getContext('2d')
-        ctx!.drawImage(img, 0, 0, width, height)
-        resolve(canvas.toDataURL())
-      }
-    })
-  }
+  const beforeUpload = (file: FileType) => {
+    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+    if (!isJpgOrPng) {
+      message.error('You can only upload JPG/PNG file!');
+    }
+    const isLt5KB = file.size / 1024 / 1024 < 2;
+    if (!isLt5KB) {
+      message.error('Image must smaller than 2MB!');
+    }
+    return isJpgOrPng && isLt5KB;
+  };
+
   useEffect(() => {
 
-  },[file])
+  }, [file])
 
   const postNewUser = async ({
     email,
@@ -98,7 +75,7 @@ const ModalAddNewUser = (props: any) => {
     username,
     role,
     file,
-  }: User) => {
+  }: IAddUser) => {
     const formData = new FormData();
     formData.append("email", email);
     formData.append("password", password);
@@ -115,13 +92,13 @@ const ModalAddNewUser = (props: any) => {
     if (data) {
       message.success("Create new user successfully!");
     }
-    console.log("data modal: ",data.DT)
+    console.log("data modal: ", data.DT)
   };
 
   const handleOkAddUser = async () => {
     console.log("chekc data before upload: ", email, username, role, password, file)
     //@ts-ignore
-    postNewUser({ email, username, role, password, file});
+    postNewUser({ email, username, role, password, file });
   }
 
   const handleCancel = () => {
@@ -149,15 +126,15 @@ const ModalAddNewUser = (props: any) => {
           autoComplete="off"
         >
           <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item<FieldType> label="Username">
+            <Col md={12} xs={24} lg={12}>
+              <Form.Item<FieldType> label="Username" style={{ width: '100%' }}>
                 <Input
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                 />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col md={12} xs={24} lg={12} style={{ width: '100%' }}>
               <Form.Item<FieldType> label="Password">
                 <Input.Password
                   value={password}
@@ -168,7 +145,7 @@ const ModalAddNewUser = (props: any) => {
           </Row>
 
           <Row gutter={16}>
-            <Col span={12}>
+            <Col md={12} xs={24} lg={12} style={{ width: '100%' }}>
               <Form.Item<FieldType> label="Email">
                 <Input
                   value={email}
@@ -176,7 +153,7 @@ const ModalAddNewUser = (props: any) => {
                 />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col md={12} xs={24} lg={12} style={{ width: '100%' }}>
               <Form.Item<FieldType> label="Role">
                 <Input value={role} onChange={(e) => setRole(e.target.value)} />
               </Form.Item>
@@ -185,7 +162,9 @@ const ModalAddNewUser = (props: any) => {
           <Row>
             <Col span={24}>
               <Form.Item<FieldType> label="Image">
-                <Dragger {...propsUpload}>
+                <Dragger {...propsUpload}
+                  beforeUpload={beforeUpload}
+                >
                   <p className="ant-upload-drag-icon">
                     <InboxOutlined />
                   </p>
@@ -195,6 +174,9 @@ const ModalAddNewUser = (props: any) => {
                   <p className="ant-upload-hint">
                     Support for a single or bulk upload. Strictly prohibited
                     from uploading company data or other banned files.
+                  </p>
+                  <p className="ant-upload-hint">
+                    You can upload images with a size of less than 5KB for website performance.
                   </p>
                 </Dragger>
               </Form.Item>

@@ -7,7 +7,10 @@ import ModalViewUser from "./moda.view.user";
 import ModalUpdateUser from "./modal.update.user";
 import ModalAddNewUser from "./modal.add.user";
 import { useRouter } from 'next/navigation'
-import { sendRequest } from "@/utils/api";
+import AddIcon from '@mui/icons-material/Add';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import Box from '@mui/system/Box';
+import * as XLSX from 'xlsx';
 
 interface DataType {
   key: string;
@@ -74,7 +77,7 @@ const UserTable = (props: any) => {
       method: "GET",
     });
     const data = await res.json();
-    console.log("data paginate: ", data.DT);
+
   };
 
   useEffect(() => {
@@ -82,17 +85,15 @@ const UserTable = (props: any) => {
   }, [current, pageSize])
 
   const onChange = (pagination: any) => {
-    console.log(pagination)
     if (pagination.current !== current) {
       setCurrent(pagination.current)
     }
-    if(pagination.pageSize !== pageSize){
+    if (pagination.pageSize !== pageSize) {
       setPageSize(pagination.pageSize)
     }
   }
 
   const cancel = (e: React.MouseEvent<HTMLElement>) => {
-    console.log(e);
     message.error("Cancel");
   };
   const columns: ColumnsType<DataType> = [
@@ -164,16 +165,48 @@ const UserTable = (props: any) => {
   const { listUser } = props;
   console.log("check super list:", listUser);
 
+  const downloadExcel = (data: any) => {
+    const workbook = XLSX.utils.book_new();
+    console.log("workbook: ", workbook)
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    console.log("worksheet: ", worksheet)
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    let buffer = XLSX.write(workbook, { bookType: "xlsx", type: "buffer" });
+    XLSX.write(workbook, { bookType: "xlsx", type: "binary" });
+    XLSX.writeFile(workbook, "Users.xlsx");
+  };
+
+  const dataToExport = listUser.map((user: any) => ({
+    id: user.id,
+    username: user.username,
+    email: user.email,
+    role: user.role,
+  }));
+
   return (
     <>
-      <Button
-        type="primary"
-        onClick={() => {
-          showModalAddUser();
-        }}
-      >
-        Add New User
-      </Button>
+      <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+        <Button
+          type="primary"
+          onClick={() => {
+            showModalAddUser();
+          }}
+          style={{ display: 'flex', alignItems: 'center' }}
+        >
+          <AddIcon />
+          Add New User
+        </Button>
+        <Button
+          type="primary"
+          onClick={() => {
+            downloadExcel(dataToExport);
+          }}
+          style={{ display: 'flex', alignItems: 'center' }}
+        >
+          <ExitToAppIcon />
+          Export
+        </Button>
+      </Box>
       <Table columns={columns}
         dataSource={listUser}
         onChange={onChange}
@@ -181,7 +214,7 @@ const UserTable = (props: any) => {
           current: current,
           total: listUser.length,
           pageSize: pageSize,
-          pageSizeOptions:[3,6,9,12,15],
+          pageSizeOptions: [3, 6, 9, 12, 15],
           showSizeChanger: true,
           showTotal: (total: number, range: [number, number]) => { return (<div> {range[0]}-{range[1]} trên {total} rows</div>) }
         }}

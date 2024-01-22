@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
-import { Montserrat } from 'next/font/google'
+import { Arimo } from 'next/font/google'
 import "./globals.css";
 import NextAuthWrapper from "@/lib/next.auth.wrapper";
+import '../utils/i18n'
 
 export const metadata: Metadata = {
   title: "Create Next App",
   description: "QuizApp",
 };
 
-const montserrat = Montserrat({
-  weight: '300',
+const arimo = Arimo({
   subsets: ['latin'],
   display: 'swap',
 })
@@ -20,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html suppressHydrationWarning lang="en" className={montserrat.className}>
+    <html suppressHydrationWarning lang="en" className={arimo.className}>
       <body>
         <NextAuthWrapper>
           {children}

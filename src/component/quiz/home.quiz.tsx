@@ -26,7 +26,8 @@ const HomeQuiz = (props: any) => {
             animate={{ scaleY: 1 }}
             exit={{ opacity: 0 }}
             transition={{ type: "spring", stiffness: 100, ease: "linear" }}
-            style={{ paddingTop: "100px" }}><Grid container spacing={2}>
+            style={{ paddingTop: "100px" }}>
+              <Grid container spacing={2} sx={{margin:'0 auto'}}>
               {dataQuiz &&
                 dataQuiz.map((item: any) => {
                   return (

@@ -42,7 +42,7 @@ const ModalViewUser = (props: any) => {
           autoComplete="off"
         >
           <Row gutter={16}>
-            <Col span={12}>
+            <Col md={12} xs={24} lg={12}>
               <Form.Item<FieldType> label="Id">
                 <Input
                   value={dataUpdate.id}
@@ -50,7 +50,7 @@ const ModalViewUser = (props: any) => {
                 />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col md={12} xs={24} lg={12}>
               <Form.Item<FieldType> label="Username">
                 <Input value={dataUpdate.username} disabled />
               </Form.Item>
@@ -58,12 +58,12 @@ const ModalViewUser = (props: any) => {
           </Row>
 
           <Row gutter={16}>
-            <Col span={12}>
+            <Col md={12} xs={24} lg={12}>
               <Form.Item<FieldType> label="Email">
                 <Input value={dataUpdate.email} disabled />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col md={12} xs={24} lg={12}>
               <Form.Item<FieldType> label="Role">
                 <Input value={dataUpdate.role} disabled />
               </Form.Item>

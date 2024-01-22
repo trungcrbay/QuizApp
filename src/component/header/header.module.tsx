@@ -30,7 +30,8 @@ import { styled } from '@mui/material/styles';
 import Switch, { SwitchProps } from '@mui/material/Switch';
 import SettingsIcon from '@mui/icons-material/Settings';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-
+import HistoryIcon from '@mui/icons-material/History';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
 const AppHeader = () => {
   const { data: session } = useSession();
@@ -52,7 +53,7 @@ const AppHeader = () => {
       transform: 'translateX(6px)',
       '&.Mui-checked': {
         color: '#fff',
-        transform: 'translateX(22px)',
+        transform: 'translateX(25px)',
         '& .MuiSwitch-thumb:before': {
           backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
             '#fff',
@@ -123,25 +124,41 @@ const AppHeader = () => {
       };
 
   const list = (anchor: Anchor) => (
-    <Box
-      sx={{ width: 250 }}
-      role="presentation"
-      onClick={toggleDrawer(anchor, false)}
-      onKeyDown={toggleDrawer(anchor, false)}
-    >
-      {session ? (
-        <Box>
-          <Box sx={{ textAlign: 'right' }} ><CloseIcon /></Box>
-          <Divider />
-          <Box sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '3px'
-          }}>
-            <AccountBoxIcon />
-            <Button onClick={handleClose}>Profile</Button>
-          </Box>
-          {session.role === 'ADMIN' &&
+    <>
+      <Box sx={{ textAlign: 'right' }} ><CloseIcon onClick={toggleDrawer(anchor, false)} /></Box>
+      <Divider />
+      <Box
+        sx={{ width: 250, display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+        role="presentation"
+        onClick={toggleDrawer(anchor, false)}
+        onKeyDown={toggleDrawer(anchor, false)}
+
+      >
+        {session ? (
+          <Box sx={{ marginTop: '15px' }}>
+            <Box sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '3px',
+            }}>
+              <AccountBoxIcon />
+              <Button onClick={() => setOpenModalUser(true)} style={{ color: '#000' }}>Profile</Button>
+            </Box>
+            {session.role === 'ADMIN' &&
+              <Box sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '3px'
+              }}>
+
+                <AdminPanelSettingsIcon />
+                <Button>
+                  <Link href={'/admin'} style={{ color: '#000', textDecoration: 'none' }}>
+                    Admin
+                  </Link>
+                </Button>
+              </Box>}
+
             <Box sx={{
               display: 'flex',
               alignItems: 'center',
@@ -150,58 +167,58 @@ const AppHeader = () => {
 
               <QuizIcon />
               <Button>
-                <Link href={'/admin'} style={{ color: '#000', textDecoration: 'none' }}>
-                  Admin
+                <Link href={'/quiz'} style={{ color: '#000', textDecoration: 'none' }}>
+                  Quiz Now
                 </Link>
               </Button>
-            </Box>}
+            </Box>
+            <Box sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '3px'
+            }}>
 
-          <Box sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '3px'
-          }}>
+              <SettingsIcon />
+              <Button>
+                <Link href={'/quiz'} style={{ color: '#000', textDecoration: 'none' }}>
+                  Password
+                </Link>
+              </Button>
+            </Box>
+            <Box sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '3px'
+            }}>
 
-            <QuizIcon />
-            <Button>
-              <Link href={'/quiz'} style={{ color: '#000', textDecoration: 'none' }}>
-                Quiz Now
-              </Link>
-            </Button>
+              <HistoryIcon />
+              <Button>
+                <Link href={'/history'} style={{ color: '#000', textDecoration: 'none', display: 'flex', gap: '5px', alignItems: 'center' }}>
+                  History
+                </Link>
+              </Button>
+            </Box>
+            <Box sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '3px'
+            }}>
+              <LogoutIcon />
+              <Button onClick={() => signOut()} style={{ color: "#000" }}>
+                Logout
+              </Button>
+            </Box>
+
           </Box>
-          <Box sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '3px'
-          }}>
-
-            <SettingsIcon />
-            <Button>
-              <Link href={'/quiz'} style={{ color: '#000', textDecoration: 'none' }}>
-                Password
-              </Link>
-            </Button>
-          </Box>
-          <Box sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '3px'
-          }}>
-            <LogoutIcon />
-            <Button onClick={() => signOut()} style={{ color: "#000" }}>
-              Logout
-            </Button>
-          </Box>
-
-        </Box>
-      ) : (
-        // <Link href={'/signin'}>
-        <Button style={{ color: "var(--fg)" }} onClick={() => router.push('signin')}>
-          Login
-        </Button>
-        // </Link>
-      )}
-    </Box>
+        ) : (
+          // <Link href={'/signin'}>
+          <Button style={{ color: "var(--fg)" }} onClick={() => router.push('signin')}>
+            Login
+          </Button>
+          // </Link>
+        )}
+      </Box>
+    </>
   );
 
   return (
@@ -211,6 +228,7 @@ const AppHeader = () => {
           position="fixed"
           style={{
             background: "var(--bg)",
+            // background: "var(--bg)",
             top: 0,
           }}
         >
@@ -278,7 +296,15 @@ const AppHeader = () => {
                     open={state[anchor]}
                     onClose={toggleDrawer(anchor, false)}
                   >
-                    {list(anchor)}
+                    {session ?
+                      list(anchor) :
+                      <Box sx={{ width: 250 }}>
+                        <Box sx={{ textAlign: 'right' }} ><CloseIcon onClick={toggleDrawer(anchor, false)} /></Box>
+                        <Divider />
+                        <Box sx={{textAlign:'center',marginTop:'20px'}}>
+                          <Button variant="contained" size="large" sx={{ width: '80%' }} onClick={() => router.push('signin')}>LOGIN</Button>
+                        </Box>
+                      </Box>}
                   </Drawer>
                 </React.Fragment>
               ))}
@@ -313,19 +339,31 @@ const AppHeader = () => {
                       "aria-labelledby": "basic-button",
                     }}
                   >
-                    <MenuItem onClick={() => setOpenModalUser(true)}>Profile</MenuItem>
+                    <MenuItem onClick={() => setOpenModalUser(true)} sx={{ display: 'flex', gap: '5px' }}>
+                      <AccountBoxIcon />
+                      Profile
+                    </MenuItem>
                     {session.role === 'ADMIN' &&
                       <MenuItem>
-                        <Link href={'/admin'} style={{ color: '#000', textDecoration: 'none' }}>
+                        <Link href={'/admin'} style={{ color: '#000', textDecoration: 'none', display: 'flex', gap: '5px', alignItems: 'center' }}>
+                          <AdminPanelSettingsIcon />
                           Admin
                         </Link>
                       </MenuItem>}
                     <MenuItem>
-                      <Link href={'/quiz'} style={{ color: '#000', textDecoration: 'none' }}>
+                      <Link href={'/quiz'} style={{ color: '#000', textDecoration: 'none', display: 'flex', gap: '5px', alignItems: 'center' }}>
+                        <QuizIcon />
                         Quiz Now
                       </Link>
                     </MenuItem>
-                    <MenuItem onClick={() => signOut()} style={{ color: "#000" }}>
+                    <MenuItem>
+                      <Link href={'/history'} style={{ color: '#000', textDecoration: 'none', display: 'flex', gap: '5px', alignItems: 'center' }}>
+                        <HistoryIcon />
+                        History
+                      </Link>
+                    </MenuItem>
+                    <MenuItem onClick={() => signOut()} style={{ color: "#000", display: 'flex', gap: '5px', alignItems: 'center' }}>
+                      <LogoutIcon />
                       Logout
                     </MenuItem>
                   </Menu>
@@ -339,6 +377,7 @@ const AppHeader = () => {
 
               )}
             </Box>
+
             {openModalUser === true &&
               <ModalProfile
                 open={openModalUser}

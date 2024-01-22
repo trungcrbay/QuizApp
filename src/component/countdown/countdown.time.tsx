@@ -3,8 +3,8 @@ import ModalQuizResult from "../quiz/modal.result";
 
 
 const CountDown = (props: any) => {
-    const [timer, setTimer] = useState(90)
-    const {open, setOpen, countTotal, countCorrect,handleSubmit} = props
+    const {open, setOpen, countTotal, countCorrect,handleSubmit ,timer ,setTimer} = props
+    
     const format = (time: number) => {
         // Hours, minutes and seconds
         var hrs = ~~(time / 3600);

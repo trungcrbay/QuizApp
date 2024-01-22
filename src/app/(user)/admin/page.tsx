@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth";
 
 const Admin = async () => {
     const session = await getServerSession(authOptions);
+
     const resDashboard = await fetch(`http://localhost:8081/api/v1/overview`, {
         method: "GET",
         headers: {

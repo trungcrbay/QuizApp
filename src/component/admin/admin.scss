@@ -1,0 +1,12 @@
+@include screen(mobile) {
+    .ant-pagination {
+        width   : 500px;
+        overflow: auto;
+    }
+}
+
+.ant-layout-sider {
+    @include screen(mobile) {
+        display: block;
+    }
+}

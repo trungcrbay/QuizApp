@@ -22,13 +22,6 @@ interface FieldType {
   remember?: string;
 }
 
-interface User {
-  id: any;
-  username: string;
-  role: string;
-  image: File
-}
-
 const onFinish = (values: any) => {
   console.log("Success:", values);
 };
@@ -77,7 +70,7 @@ const ModalUpdateUser = (props: any) => {
     }
   }, [dataUpdate]);
 
-  const updateParticipant = async ({ id, username, role, image }: User) => {
+  const updateParticipant = async ({ id, username, role, image }: IUpdateUser) => {
     const formData = new FormData();
     formData.append("id", id);
     formData.append("username", username);
@@ -119,12 +112,12 @@ const ModalUpdateUser = (props: any) => {
           autoComplete="off"
         >
           <Row gutter={16}>
-            <Col span={12}>
+            <Col md={12} xs={24} lg={12}>
               <Form.Item<FieldType> label="Id">
                 <Input value={dataUpdate.id} disabled />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col md={12} xs={24} lg={12}>
               <Form.Item<FieldType> label="Username">
                 <Input
                   value={username}
@@ -135,12 +128,12 @@ const ModalUpdateUser = (props: any) => {
           </Row>
 
           <Row gutter={16}>
-            <Col span={12}>
+            <Col md={12} xs={24} lg={12}>
               <Form.Item<FieldType> label="Email">
                 <Input value={dataUpdate.email} disabled />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col md={12} xs={24} lg={12}>
               <Form.Item<FieldType> label="Role">
                 <Input
                   value={role}

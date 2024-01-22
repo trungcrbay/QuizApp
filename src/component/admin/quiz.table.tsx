@@ -3,10 +3,10 @@ import React, { useEffect, useState } from "react";
 import { Space, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Button, Popconfirm, message } from "antd";
-import ModalViewUser from "./moda.view.user";
-import ModalUpdateUser from "./modal.update.user";
-import ModalAddNewUser from "./modal.add.user";
 import { useRouter } from 'next/navigation'
+import AddIcon from '@mui/icons-material/Add';
+import ModalAddNewQuiz from "./modal.add.quiz";
+import ModalUpdateQuiz from "./update.quiz";
 
 interface DataType {
   key: string;
@@ -17,28 +17,21 @@ interface DataType {
 }
 
 const QuizTable = (props: any) => {
+  const { listUser , listQuiz , session } = props;
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isModalQuizOpen, setIsModalQuizOpen] = useState<boolean>(false);
   const [isModalUpdate, setIsModalUpdate] = useState<boolean>(false);
   const [dataUpdate, setDataUpdate] = useState({});
   const [isModalAddUser, setIsModalAddUser] = useState<boolean>(false);
-  const [pageSize, setPageSize] = useState<number>(3)
-  const [current, setCurrent] = useState<number>(1)
+  const [isModalAddQuiz, setIsModalAddQuiz] = useState<boolean>(false);
   const router = useRouter()
 
-  const showModalAddUser = () => {
-    setIsModalAddUser(true);
-  };
-  const showModal = () => {
-    setIsModalOpen(true);
+  const showModalAddQuiz = () => {
+    setIsModalAddQuiz(true);
   };
 
   const showModalUpdate = () => {
     setIsModalUpdate(true);
-  };
-
-
-  const handleOk = () => {
-    setIsModalOpen(false);
   };
 
   const handleOkUpdate = () => {
@@ -51,44 +44,26 @@ const QuizTable = (props: any) => {
     setDataUpdate({});
   };
 
-  const deleteParticipant = async (dataUpdate: any) => {
-    const res = await fetch(`http://localhost:8081/api/v1/participant`, {
+  console.log("dataUpdate.id" , dataUpdate.id)
+
+  const deleteQuiz = async (id:number) => {
+    //@ts-ignore
+    const res = await fetch(`http://localhost:8081/api/v1/quiz/${id}`, {
       method: "DELETE",
       headers: {
-        "Content-Type": "application/json",
+        // "Content-Type": "application/json",
+        Authorization: `Bearer ${session.access_token}`
       },
-      body: JSON.stringify({
-        // ts-ignore
-        id: dataUpdate,
-      }),
+      // body: JSON.stringify({
+      //   // ts-ignore
+      //   id: dataUpdate,
+      // }),
     });
     if (res) {
       message.success("Deleted successfully!");
       router.refresh()
     }
   };
-
-  const getParticipantPaginate = async () => {
-    const res = await fetch(`http://localhost:8081/api/v1/participant?page=${current}&limit=${pageSize}`, {
-      method: "GET",
-    });
-    const data = await res.json();
-    console.log("data paginate: ", data.DT);
-  };
-
-  useEffect(() => {
-    getParticipantPaginate()
-  }, [current, pageSize])
-
-  const onChange = (pagination: any) => {
-    console.log(pagination)
-    if (pagination.current !== current) {
-      setCurrent(pagination.current)
-    }
-    if(pagination.pageSize !== pageSize){
-      setPageSize(pagination.pageSize)
-    }
-  }
 
   const cancel = (e: React.MouseEvent<HTMLElement>) => {
     console.log(e);
@@ -102,34 +77,25 @@ const QuizTable = (props: any) => {
       render: (text) => <a>{text}</a>,
     },
     {
-      title: "Username",
-      dataIndex: "username",
-      key: "username",
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
     },
     {
-      title: "Role",
-      dataIndex: "role",
-      key: "role",
+      title: "Difficulty",
+      dataIndex: "difficulty",
+      key: "difficulty",
     },
     {
       title: "Action",
       key: "action",
       render: (_, record) => (
         <Space size="small">
-          <Button
-            type="primary"
-            onClick={() => {
-              showModal();
-              setDataUpdate(record);
-            }}
-          >
-            View
-          </Button>
           <Button
             type="text"
             onClick={() => {
@@ -146,7 +112,7 @@ const QuizTable = (props: any) => {
             onConfirm={() => {
               setDataUpdate(record);
               //@ts-ignore
-              deleteParticipant(record.id);
+              deleteQuiz(record.id);
             }}
             //@ts-ignore
             onCancel={cancel}
@@ -160,51 +126,37 @@ const QuizTable = (props: any) => {
     },
   ];
 
-  const { listUser } = props;
-  console.log("check super list:", listUser);
+
+  console.log("check super quiz:", listQuiz);
+  console.log("check quiz session:", session.access_token);
 
   return (
     <>
       <Button
         type="primary"
         onClick={() => {
-          showModalAddUser();
+          showModalAddQuiz();
         }}
+        style={{display:'flex',alignItems:'center'}}
       >
-        Add New User
+        <AddIcon />
+        Add New Quiz
       </Button>
       <Table columns={columns}
-        dataSource={listUser}
-        onChange={onChange}
-        pagination={{
-          current: current,
-          total: listUser.length,
-          pageSize: pageSize,
-          pageSizeOptions:[3,6,9,12,15],
-          showSizeChanger: true,
-          showTotal: (total: number, range: [number, number]) => { return (<div> {range[0]}-{range[1]} trên {total} rows</div>) }
-        }}
-
+        dataSource={listQuiz}
       />
-      <ModalAddNewUser
-        open={isModalAddUser}
-        setOpen={setIsModalAddUser}
+      <ModalAddNewQuiz
+        open={isModalAddQuiz}
+        setOpen={setIsModalAddQuiz}
+        access_token={session.access_token}
       />
-      <ModalViewUser
-        title="View User"
-        dataUpdate={dataUpdate}
-        setDataUpdate={setDataUpdate}
-        open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        listUser={listUser}
-      />
-      <ModalUpdateUser
+      <ModalUpdateQuiz
         dataUpdate={dataUpdate}
         open={isModalUpdate}
         onOk={handleOkUpdate}
         onCancel={handleCancel}
-        listUser={listUser}
+        listQuiz={listQuiz}
+        access_token={session.access_token}
       />
     </>
   );

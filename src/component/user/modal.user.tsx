@@ -9,7 +9,7 @@ import Button from '@mui/material/Button';
 import { Input } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import CloseIcon from '@mui/icons-material/Close';
-import ModalChangePassword from './modal.pass';
+import { useRouter } from 'next/navigation'
 
 const style = {
     position: 'absolute' as 'absolute',
@@ -23,10 +23,6 @@ const style = {
     p: 4,
 };
 
-interface UserProfle {
-    username: string;
-    image: File | null;
-}
 
 const ModalProfile = (props: any) => {
     const { open, handleClose } = props;
@@ -37,6 +33,7 @@ const ModalProfile = (props: any) => {
     const [accessToken, setAccessToken] = React.useState("");
     const [image, setImage] = React.useState<File | null>(null);
     const [isChangePass,setIsChangePass] = React.useState<boolean>(false);
+    const router = useRouter()
 
     React.useEffect(() => {
         setUsername(session?.user.email);
@@ -57,7 +54,7 @@ const ModalProfile = (props: any) => {
         }
     }
 
-    const postUpdateProfile = async ({ username, image }: UserProfle) => {
+    const postUpdateProfile = async ({ username, image }: IUserProfile) => {
         const formData = new FormData();
         formData.append("username", username);
         //@ts-ignore
@@ -91,14 +88,14 @@ const ModalProfile = (props: any) => {
             >
                 <Box sx={style}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <Typography id="modal-modal-title" variant="h6" component="h2">
+                        <Typography id="modal-modal-title" variant="h6" component="h2" sx={{color:'#000'}}>
                             Profile
                         </Typography>
                         <CloseIcon sx={{ cursor: 'pointer' }}
                             onClick={() => handleClose()} />
                     </Box>
                     {editUsername === false ?
-                        <Typography id="modal-modal-description" sx={{ mt: 2, display: 'flex', gap: '5px' }}>
+                        <Typography id="modal-modal-description" sx={{ mt: 2, display: 'flex', gap: '5px',color:'#000' }}>
                             Email: {username}
                             <EditIcon onClick={() => setEditUsername(true)} style={{ cursor: 'pointer' }} />
                         </Typography>
@@ -113,16 +110,18 @@ const ModalProfile = (props: any) => {
                                 style={{ height: '30px' }}
                             >OK</Button>
                         </Box>}
-                    <Typography id="modal-modal-description" sx={{ mt: 2, display: 'flex', gap: '5px' }}>
+                    <Typography id="modal-modal-description" sx={{ mt: 2, display: 'flex', gap: '5px',color:'#000' }}>
                         Role: {session?.role}
                     </Typography>
                     <Button variant="contained"
                         onClick={() => {
                             setEditUsername(false);
                             setIsChangePass(true);
+                            router.push('/password')
                         }}
                         style={{ height: '30px' ,marginTop:'20px'}}
                     >Password</Button>
+                    
                     <Typography id="modal-modal-description" sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
                         <img
                             src={`data:image/jpeg;base64, ${image}`} />

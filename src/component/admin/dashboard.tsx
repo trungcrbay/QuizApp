@@ -7,10 +7,10 @@ const AdminDashboard = (props: any) => {
   console.log("check data dashboard: ", dataDashboard);
 
   return (
-    <>
+    <div>
       <Row gutter={[16, 16]}>
-        <Col span={12}>
-          <Card style={{ width: 300 ,background:'#98DBE9' , fontSize:'20px'}}>
+        <Col span={{ xs: 24, md: 12,lg:12 }}>
+          <Card style={{ width: 300, background: '#98DBE9', fontSize: '20px' }}>
             <p>Total User</p>
             <Divider />
             <p >
@@ -21,8 +21,8 @@ const AdminDashboard = (props: any) => {
             </p>
           </Card>
         </Col>
-        <Col span={12}>
-          <Card style={{ width: 300,background:"#FBBCC0", fontSize:'20px' }}>
+        <Col span={{ xs: 24, md: 12,lg:12 }}>
+          <Card style={{ width: 300, background: "#FBBCC0", fontSize: '20px' }}>
             <p>Total Admin</p>
             <Divider />
             <p>
@@ -36,8 +36,8 @@ const AdminDashboard = (props: any) => {
       </Row>
       <Divider />
       <Row gutter={[16, 16]}>
-        <Col span={8}>
-          <Card style={{ width: 300,background:'#B8AEFF', fontSize:'20px' }}>
+        <Col span={{xs: 24, md: 8}}>
+          <Card style={{ width: 300, background: '#B8AEFF', fontSize: '20px' }}>
             <p>Total Quiz</p>
             <Divider />
             <p>
@@ -48,8 +48,8 @@ const AdminDashboard = (props: any) => {
             </p>
           </Card>
         </Col>
-        <Col span={8}>
-          <Card style={{ width: 300,background:'#FBBCC0', fontSize:'20px' }}>
+        <Col span={{xs: 24, md: 8}}>
+          <Card style={{ width: 300, background: '#FBBCC0', fontSize: '20px' }}>
             <p>Total Question</p>
             <Divider />
             <p>
@@ -60,8 +60,8 @@ const AdminDashboard = (props: any) => {
             </p>
           </Card>
         </Col>
-        <Col span={8}>
-          <Card style={{ width: 300,background:'#B8FBC3', fontSize:'20px' }}>
+        <Col span={{xs: 24, md: 8}}>
+          <Card style={{ width: 300, background: '#B8FBC3', fontSize: '20px' }}>
             <p>Total Answer</p>
             <Divider />
             <p>
@@ -73,7 +73,7 @@ const AdminDashboard = (props: any) => {
           </Card>
         </Col>
       </Row>
-    </>
+    </div>
   );
 };
 

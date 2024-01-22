@@ -9,16 +9,20 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 800,
+    width: {
+        md:800,
+        lg:800,
+        xs:'90%'
+    },
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
-    color: '#000'
+    color: '#000',
 };
 
 const ModalQuizResult = (props: any) => {
-    const { open, setOpen, countCorrect, countTotal } = props
+    const { open, setOpen, countCorrect, countTotal,isShowResult,setIsShowResult } = props
     const handleClose = () => setOpen(false);
     return (<div>
         <Modal
@@ -45,7 +49,10 @@ const ModalQuizResult = (props: any) => {
                 </Box>
                 <Box sx={{ justifyContent: 'flex-end', display: 'flex', gap: '5px', marginTop: '20px' }}>
                     <Button variant="outlined" onClick={() => handleClose()} size="small">Close</Button>
-                    <Button variant="contained" onClick={() => handleClose()} size="small">Results</Button>
+                    <Button variant="contained" onClick={() => {
+                        handleClose();
+                        setIsShowResult(true);
+                    }} size="small">Results</Button>
                 </Box>
             </Box>
         </Modal>

@@ -1,15 +1,6 @@
 import queryString from "query-string";
 import slugify from "slugify";
 
-interface IRequest {
-    url: string;
-    method: string;
-    body?: { [key: string]: any };
-    queryParams?: any;
-    useCredentials?: boolean;
-    headers?: any;
-    nextOption?: any;
-  }
 //cu phap genetic <T>
 export const sendRequest = async <T>(props: IRequest) => {
   let {
@@ -37,7 +28,7 @@ export const sendRequest = async <T>(props: IRequest) => {
 
   return fetch(url, options).then((res) => {
     if (res.ok) {
-      return res.json() as T;
+      return res.json() as T; //generic 
     } else {
       return res.json().then(function (json) {
         // to be able to access error status when you catch the error

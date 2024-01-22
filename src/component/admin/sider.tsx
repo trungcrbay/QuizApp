@@ -4,8 +4,8 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   UploadOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
+  UserOutlined, DashboardOutlined,
+  LaptopOutlined, NotificationOutlined, FolderAddOutlined
 } from '@ant-design/icons';
 import { Layout, Menu, Button, theme } from 'antd';
 import { usePathname } from 'next/navigation';
@@ -13,10 +13,37 @@ import Link from 'next/link';
 import UserTable from './user.table';
 import AdminDashboard from './dashboard';
 import QuizTable from './quiz.table';
+import AssignQuiz from './assign.quiz';
+import type { MenuProps } from 'antd';
+import './admin.css'
+import ManageAnswer from './manage.answer';
+import ManageQuestion from './manage.question';
+
 const { Header, Sider, Content } = Layout;
 
+
 const SiderAdmin = (props: any) => {
-  const { listUser, dataDashboard } = props;
+  const { listUser, dataDashboard, listQuiz, session } = props;
+  const items2: MenuProps['items'] = [UserOutlined, LaptopOutlined, NotificationOutlined].map(
+    (icon, index) => {
+      const key = String(index + 1);
+
+      return {
+        key: `sub${key}`,
+        icon: React.createElement(icon),
+        label: `subnav ${key}`,
+
+        children: new Array(4).fill(null).map((_, j) => {
+          const subKey = index * 4 + j + 1;
+          return {
+            key: subKey,
+            label: `option${subKey}`,
+          };
+        }),
+      };
+    },
+  );
+
   console.log("check super list:", listUser);
   const [collapsed, setCollapsed] = useState(false);
   const {
@@ -33,6 +60,18 @@ const SiderAdmin = (props: any) => {
     setSelectedPage(3);
   }
 
+  if (pathname === '/admin/answer' && selectedPage !== 4) {
+    setSelectedPage(4);
+  }
+
+  if (pathname === '/admin/question' && selectedPage !== 5) {
+    setSelectedPage(5);
+  }
+
+  if (pathname === '/admin/assign' && selectedPage !== 6) {
+    setSelectedPage(6);
+  }
+
   return (
     <Layout style={{ marginTop: '70px' }}>
       <Sider trigger={null} collapsible collapsed={collapsed} >
@@ -42,33 +81,45 @@ const SiderAdmin = (props: any) => {
           mode="inline"
           //@ts-ignore
           defaultSelectedKeys={`${selectedPage}`}
-          style={{ background: 'var(--bg)', color: 'var(--fg)' }}
+          style={{ color: '#fff' }}
           items={[
             {
               key: '1',
-              icon: <UserOutlined />,
-              label: <Link href="/admin/dashboard" shallow>Dashboard</Link>,
-
+              icon: <DashboardOutlined />,
+              label: <Link href="/admin" shallow>Dashboard</Link>,
             },
             {
               key: '2',
-              icon: <VideoCameraOutlined />,
-              label: <Link href="/admin/user" shallow>Manage Users</Link>,
+              icon: <UserOutlined style={{ color: '#fff' }} />,
+              label: <Link href="/admin/user" shallow style={{ color: '#fff' }}>Manage Users</Link>,
+              children: [
+                {
+                  key: '3',
+                  icon: <UploadOutlined style={{ color: '#fff' }} />,
+                  label: <Link href="/admin/quiz" shallow style={{ color: '#fff' }}>Manage Quiz</Link>,
 
+                },
+                {
+                  key: '4',
+                  icon: <UploadOutlined style={{ color: '#fff' }} />,
+                  label: <Link href="/admin/answer" shallow style={{ color: '#fff' }}>Manage Answer</Link>,
+                },
+                {
+                  key: '5',
+                  icon: <UploadOutlined style={{ color: '#fff' }} />,
+                  label: <Link href="/admin/question" shallow style={{ color: '#fff' }}>Manage Question</Link>,
+                },
+              ]
             },
-            {
-              key: '3',
-              icon: <UploadOutlined />,
-              label: <Link href="/admin/quiz" shallow >Manage Quiz</Link>,
 
-            },
             {
-              key: '4',
-              icon: <UploadOutlined />,
-              label: <Link href="/admin/assign" shallow >Assign Quiz</Link>,
+              key: '6',
+              icon: <FolderAddOutlined />,
+              label: <Link href="/admin/assign" shallow style={{ color: '#fff' }}>Assign Quiz</Link>,
             },
           ]}
         />
+
       </Sider>
       <Layout>
         <Header style={{ padding: 0, background: colorBgContainer }}>
@@ -90,11 +141,15 @@ const SiderAdmin = (props: any) => {
             minHeight: '100vh',
             background: colorBgContainer,
             borderRadius: borderRadiusLG,
+            overflow: 'auto'
           }}
         >
 
           {pathname === '/admin/user' && <UserTable listUser={listUser} />}
-          {pathname === '/admin/quiz' && <QuizTable listUser={listUser} />}
+          {pathname === '/admin/quiz' && <QuizTable listUser={listUser} listQuiz={listQuiz} session={session} />}
+          {pathname === '/admin/answer' && <ManageAnswer listQuiz={listQuiz} session={session} />}
+          {pathname === '/admin/question' && <ManageQuestion listQuiz={listQuiz} session={session} />}
+          {pathname === '/admin/assign' && <AssignQuiz listQuiz={listQuiz} listUser={listUser} session={session} />}
           {pathname === '/admin' && <AdminDashboard dataDashboard={dataDashboard} />}
         </Content>
       </Layout>

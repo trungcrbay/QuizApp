@@ -13,16 +13,9 @@ import Link from 'next/link'
 import CheckIcon from '@mui/icons-material/Check';
 import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 
-interface IRegister {
-    email: string;
-    username: string;
-    password: string
-}
-
 interface State extends SnackbarOrigin {
     open: boolean;
 }
-
 
 const AuthRegister = (props: any) => {
     //@ts-ignore

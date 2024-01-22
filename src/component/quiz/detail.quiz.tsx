@@ -14,58 +14,56 @@ import { useParams } from 'next/navigation'
 import _ from "lodash";
 import ModalQuizResult from "./modal.result";
 import RightContent from "./right.content";
-
-interface IAnswerData {
-  id: number;
-  description: string;
-  imageFile: string;
-  imageName: string;
-  answers: {
-    id: number;
-    description: string;
-    isCorrect: boolean;
-    isSelected: boolean;
-  }[];
-}
-
-interface Answer {
-  questionId: number;
-  userAnswerId: number[];
-}
-
-interface Payload {
-  quizId: number;
-  answers: Answer[];
-}
-
-interface Result {
-  countCorrect: number;
-  countTotal: number;
-  quizData?: any
-}
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
 
 const DetailQuiz = (props: any) => {
   const { detailDataQuiz, session } = props;
   const [dataQuiz, setDataquiz] = useState<IAnswerData[]>(detailDataQuiz);
   const [indexQuiz, setIndexQuiz] = useState<number>(0);
+  const [timer, setTimer] = useState(150)
   const [answerApi, setAnswerApi] = useState<Answer[]>([]);
   const [open, setOpen] = useState<boolean>(false);
   const [result, setResult] = useState<Result | any>({});
+  const [isEndQuiz, setIsEndQUiz] = useState<boolean>(false);
+  const [isShowResult, setIsShowResult] = useState<boolean>(false);
+  const [currentQuizSelected,setCurrentQuizSelected] = useState<any[]>([]);
   const params = useParams<{ slug: string }>();
   const quizId = params.slug
   const handleOpen = () => setOpen(true);
   const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>, id: any, quizId: any) => {
-    const currentAnswers = _.cloneDeep(dataQuiz[indexQuiz].answers); // Tạo bản sao sâu
-    currentAnswers.forEach((item: any) => {
+    const currentAnswers = _.cloneDeep(dataQuiz[indexQuiz].answers); //Clone data
+    console.log("currentAnswers: ", currentAnswers)
+    const currentSelectedAnswers = currentAnswers.map((item: any) => {
       if (+item.id === +quizId) {
         item.isSelected = true;
+        dataQuiz[indexQuiz].checkSelected = true;
       } else {
         item.isSelected = false;
       }
+      return item;
     });
-
-    dataQuiz[indexQuiz].answers = currentAnswers; // Cập nhật dữ liệu gốc
+    dataQuiz[indexQuiz].answers = currentSelectedAnswers; // Cập nhật dữ liệu gốc
     setDataquiz(dataQuiz);
+  }
+
+  const resResult = async () => {
+    const res = await fetch("http://localhost:8081/api/v1/quiz-submit", {
+      method: "POST",
+      body: JSON.stringify({
+        quizId: +quizId,
+        answers: answerApi
+      }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session}`
+      },
+    });
+    var data = await res.json();
+    if (data) {
+      console.log("check result data: ", data.DT)
+      setResult(data.DT)
+    }
   }
 
   const handleSubmit = () => {
@@ -93,6 +91,8 @@ const DetailQuiz = (props: any) => {
       payload.answers = answers
       setAnswerApi(answers)
     }
+    setTimer(0);
+    setIsEndQUiz(true);
   }
 
   const handleNextQuiz = () => {
@@ -104,31 +104,11 @@ const DetailQuiz = (props: any) => {
     setIndexQuiz(indexQuiz - 1);
   };
 
-  const resResult = async () => {
-    const res = await fetch("http://localhost:8081/api/v1/quiz-submit", {
-      method: "POST",
-      body: JSON.stringify({
-        quizId: +quizId,
-        answers: answerApi
-      }),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${session}`
-      },
-    });
-    var data = await res.json();
-    if (data) {
-      console.log(data.DT)
-      setResult(data.DT)
-    }
-  }
-
-  console.log("dataQuiz : ", dataQuiz)
-
   useEffect(() => {
-    resResult()
-    console.log("indexQuiz ", indexQuiz)
-  }, [answerApi, indexQuiz])
+    if (answerApi.length > 0) {
+      resResult();
+    }
+  }, [answerApi])
 
   return (
     <Container>
@@ -192,6 +172,7 @@ const DetailQuiz = (props: any) => {
                               control={
                                 <Radio
                                   color="error"
+                                  disabled={isEndQuiz}
                                   value={quiz.description}
                                   checked={quiz.isSelected}
                                   checkedIcon={<CircleIcon />}
@@ -201,7 +182,19 @@ const DetailQuiz = (props: any) => {
                                 />
                               }
 
-                              label={quiz.description}
+                              // label={`${quiz.description}${isCheckCorrectAnswer && isCheckWrongAnswer === false ? ' dung r' : ' sai r'}`}
+                              label={
+                                <div style={{ gap: '3px', alignItems: 'center', display: 'flex',color:'var(--fg)' }}>
+                                  {quiz.description}
+                                  {isShowResult === true &&
+                                    <>
+                                      {quiz.isSelected && quiz.isCorrect === false ? <CloseIcon style={{ color: 'red' }} /> : ''}
+                                      {quiz.isCorrect === true ? <CheckIcon style={{ color: 'green' }} /> : ''}
+                                    </>
+                                  }
+                                </div>
+                              }
+
                             />
                           </div>
                         );
@@ -233,10 +226,12 @@ const DetailQuiz = (props: any) => {
                   </Button>
                 )}
                 {indexQuiz === dataQuiz.length - 1 && (
-                  <Button onClick={() => {
-                    handleSubmit();
-                    handleOpen()
-                  }}>Submit</Button>
+                  <Button
+                    disabled={isEndQuiz}
+                    onClick={() => {
+                      handleSubmit();
+                      handleOpen()
+                    }}>Submit</Button>
                 )}
               </Box>
             </Box>
@@ -246,13 +241,24 @@ const DetailQuiz = (props: any) => {
               countTotal={result.countTotal}
               handleSubmit={handleSubmit}
               handleOpen={handleOpen}
+              timer={timer}
+              indexQuiz={indexQuiz}
+              setIndexQuiz={setIndexQuiz}
+              setTimer={setTimer}
+              isEndQuiz={isEndQuiz}
+              setIsEndQUiz={setIsEndQUiz}
+              dataQuiz={dataQuiz}
+              currentQuizSelected={currentQuizSelected}
             />
           </Grid>
         </Grid>
       </Box>
       {open === true && <ModalQuizResult open={open} setOpen={setOpen}
+        isShowResult={isShowResult}
+        setIsShowResult={setIsShowResult}
         countCorrect={result.countCorrect}
-        countTotal={result.countTotal} />}
+        countTotal={result.countTotal}
+      />}
     </Container>
   );
 };
