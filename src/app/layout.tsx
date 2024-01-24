@@ -5,8 +5,8 @@ import NextAuthWrapper from "@/lib/next.auth.wrapper";
 import '../utils/i18n'
 
 export const metadata: Metadata = {
-  title: "Create Next App",
-  description: "QuizApp",
+  title: "QuizzApp",
+  description: "QuizzApp",
   icons: {
     icon: [
       {
@@ -19,6 +19,7 @@ export const metadata: Metadata = {
       },
     ],
   },
+  keywords:["quiz","quiz app", "practice","quiz for web"]
 };
 
 const arimo = Arimo({
@@ -33,6 +34,7 @@ export default function RootLayout({
 }) {
   return (
     <html suppressHydrationWarning lang="en" className={arimo.className}>
+      
       <body>
         <NextAuthWrapper>
           {children}

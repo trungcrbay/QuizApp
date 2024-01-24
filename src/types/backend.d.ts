@@ -18,7 +18,7 @@ declare global {
         DT?: T
     }
 
-    interface IGetQuizByParticipant{
+    interface IGetQuizByParticipant {
         id: number;
         description: string;
         image: File | null;
@@ -30,4 +30,28 @@ declare global {
             time_end: null
         }
     }
+
+    interface IGetAllUser {
+        id: number;
+        username: string;
+        email: string;
+        role: string;
+        image?: File | string;
+    }
+
+    interface IGetDetailQuiz {
+        quizId:number;
+        qa:{
+            id:number;
+            description:string;
+            imageFile: File | string | null;
+            imageName : string;
+            answers:{
+                id:string;
+                description:string;
+                isCorrect:boolean;      
+            }
+        }
+    }
+
 }

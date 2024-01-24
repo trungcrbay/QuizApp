@@ -4,6 +4,7 @@ import { Modal } from "antd";
 import { Form, Input, Col, Row, Divider, message, Upload } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import type { UploadProps } from "antd";
+import { sendRequest } from "@/utils/api";
 const { Dragger } = Upload;
 
 interface FieldType {
@@ -20,6 +21,7 @@ const onFinishFailed = (errorInfo: any) => {
   console.log("Failed:", errorInfo);
 };
 
+//@ts-ignore
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
 const ModalAddNewUser = (props: any) => {
@@ -54,10 +56,12 @@ const ModalAddNewUser = (props: any) => {
   };
 
   const beforeUpload = (file: FileType) => {
+    //@ts-ignore
     const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
     if (!isJpgOrPng) {
       message.error('You can only upload JPG/PNG file!');
     }
+    //@ts-ignore
     const isLt5KB = file.size / 1024 / 1024 < 2;
     if (!isLt5KB) {
       message.error('Image must smaller than 2MB!');
@@ -88,7 +92,18 @@ const ModalAddNewUser = (props: any) => {
       body: formData,
     });
 
+    // const handlePostNewUser = async () => {
+    //   const res = await sendRequest<IBackendRes<IAddUser>>({
+    //     url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/participant`,
+    //     method: 'POST',
+    //     body: formData,
+    //   })
+    //   return res;
+    // }
+
+    // const data = await handlePostNewUser();
     const data = await res.json();
+    console.log("check data:",data)
     if (data) {
       message.success("Create new user successfully!");
     }

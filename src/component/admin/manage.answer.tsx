@@ -51,9 +51,6 @@ const ManageAnswer = (props: any) => {
 
     const onChange: CheckboxProps['onChange'] = (e) => {
         console.log(`checked = ${e.target.checked}`);
-        // if (e.target.checked) {
-        //     setIsCorrect(true);
-        // }
     };
 
     const handleChange = (e: any) => {
@@ -122,6 +119,7 @@ const ManageAnswer = (props: any) => {
         });
 
         const data = await res.json();
+        
         if (data) {
             message.success("Create new quiz successfully!");
             setIdQuestion(data.DT.id);
@@ -292,13 +290,12 @@ const ManageAnswer = (props: any) => {
 
                                 return (
                                     <div style={{ margin: '15px 0 0 15px' }}>
-                                        <Checkbox onChange={onChange}>
+                                        <Checkbox onChange={onChange} value={item.isCorrect}>
                                             <Input size="large" value={itemAnswer.description} onChange={(e) => handleOnChangeQuestion('ANSWER', item.id, e.target.value)} placeholder={`Answer ${index + 1}`} style={{ width: '500px' }} />
                                         </Checkbox>
                                     </div>
                                 )
                             })}
-
                             <Button type='primary' onClick={handlePostNew} style={{ marginTop: '15px' }}>Add quiz</Button>
                         </div>
                     )

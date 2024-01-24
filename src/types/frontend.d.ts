@@ -42,6 +42,22 @@ declare global {
         file: File;
     }
 
+    interface IGetAllQuiz {
+        id: number;
+        description: string;
+        name: string;
+        difficulty: string;
+        file: File;
+    }
+
+    interface IGetQuiz {
+        id: number;
+        description: string;
+        name: string;
+        difficulty: string;
+        file: File;
+    }
+
     interface IRegister {
         email: string;
         username: string;
