@@ -3,9 +3,10 @@ import AppHeader from "@/component/header/header.module";
 import ThemeRegistry from "../themes/ThemeRegistry";
 import NextTopLoader from 'nextjs-toploader';
 
+
 export const metadata: Metadata = {
-  title: "Create Next App",
-  description: "QuizApp",
+  title: "QuizzApp",
+  description: "QuizzApp",
 };
 
 export default function UserLayout({

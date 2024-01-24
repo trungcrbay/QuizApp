@@ -67,7 +67,7 @@ const HistoryUser = (props: any) => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {rowsData.map((row: any) => (
+                            {rowsData.length > 0 ? rowsData.map((row: any) => (
                                 <StyledTableRow key={row.name}>
                                     <StyledTableCell align="center">{row.quiz_id}</StyledTableCell>
                                     <StyledTableCell align="center">{row.quizHistory.name}</StyledTableCell>
@@ -78,7 +78,11 @@ const HistoryUser = (props: any) => {
                                     <StyledTableCell align="center">{row.total_correct}</StyledTableCell>
                                     <StyledTableCell align="center">{convertToLocaleDate(row.updatedAt)}</StyledTableCell>
                                 </StyledTableRow>
-                            ))}
+                            )) : <StyledTableRow >
+                                <StyledTableCell colSpan={6} align="center" style={{padding:'0'}}>
+                                    <img style={{width:'100%',height:'200px',objectFit:'contain'}} src='no_data.png'/>
+                                </StyledTableCell>
+                            </StyledTableRow>}
                         </TableBody>
                     </Table>
                 </TableContainer>

@@ -10,6 +10,12 @@
   }
 }
 
+@media (max-width: 450px) {
+  .no_data_img {
+    width: 100%;
+  }
+}
+
 .texter {
   color: red;
 }/*# sourceMappingURL=home.module.css.map */

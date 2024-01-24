@@ -7,6 +7,18 @@ import '../utils/i18n'
 export const metadata: Metadata = {
   title: "Create Next App",
   description: "QuizApp",
+  icons: {
+    icon: [
+      {
+        media: '(prefers-color-scheme: light)',
+        url: '/icons.png',
+      },
+      {
+        media: '(prefers-color-scheme: dark)',
+        url: '/icons.png',
+      },
+    ],
+  },
 };
 
 const arimo = Arimo({

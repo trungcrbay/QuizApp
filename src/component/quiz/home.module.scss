@@ -1,3 +1,22 @@
+@mixin screen($device) {
+    @if $device==tablet {
+        @media (max-width: 991px) {
+            @content;
+        }
+    }
+
+    @if $device==mobile {
+        @media (max-width: 450px) {
+            @content;
+        }
+    }
+
+    @if $device==pc {
+        @media (min-width: 992px) {
+            @content;
+        }
+    }
+}
 
 .home_img {
     width     : 100%;
@@ -11,6 +30,12 @@
     }
 }
 
-.texter{
-    color:red;
+.no_data_img {
+    @include screen(mobile) {
+        width: 100%;
+    }
+}
+
+.texter {
+    color: red;
 }

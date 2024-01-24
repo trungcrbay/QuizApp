@@ -6,7 +6,15 @@ import { v4 as uuidv4 } from 'uuid';
 import {
     PlusCircleOutlined, MinusCircleOutlined
 } from '@ant-design/icons';
+import { Checkbox } from 'antd';
+import type { CheckboxProps } from 'antd';
+import _ from 'lodash'
 
+interface IAddAnswer {
+    answer: string;
+    isCorrect: boolean;
+    idQuiz: any;
+}
 
 const ManageAnswer = (props: any) => {
     const { listQuiz, session } = props;
@@ -14,12 +22,13 @@ const ManageAnswer = (props: any) => {
     const [file, setFile] = React.useState<File | null>(null);
     const [quizId, setQuizId] = React.useState<any>(0);
     const [description, setDescription] = React.useState<string>("");
+    const [idQuestion, setIdQuestion] = React.useState<any>(0);
+    const [inputData, setInputData] = React.useState<any[]>([])
     const [questions, setQuestions] = React.useState([
         {
             id: uuidv4(),
-            description: "",
-            image: "",
-            imageName: "",
+            description: description,
+            image: File,
             answers: [
                 {
                     id: uuidv4(),
@@ -39,6 +48,23 @@ const ManageAnswer = (props: any) => {
             ]
         }
     ])
+
+    const onChange: CheckboxProps['onChange'] = (e) => {
+        console.log(`checked = ${e.target.checked}`);
+        // if (e.target.checked) {
+        //     setIsCorrect(true);
+        // }
+    };
+
+    const handleChange = (e: any) => {
+        const { id, value } = e.target;
+
+        // Take the previous state (object), and update it
+        // by spreading (copying) out the previous object,
+        // and adding a new property with the id as key
+        // and the value as the value.
+        setInputData(prev => ({ ...prev, [id]: value }));
+    }
 
     const handleChangeQuiz = (value: string) => {
         setQuizId(value);
@@ -74,12 +100,13 @@ const ManageAnswer = (props: any) => {
 
     console.log("check file: ", file)
 
-    const postNewAnswer = async ({
+    const postNewQuestion = async ({
         quizId,
         description,
         file,
     }: IAddQUestion) => {
         const formData = new FormData();
+        //@ts-ignore
         formData.append("quiz_id", quizId);
         formData.append("description", description);
         //@ts-ignore
@@ -97,6 +124,32 @@ const ManageAnswer = (props: any) => {
         const data = await res.json();
         if (data) {
             message.success("Create new quiz successfully!");
+            setIdQuestion(data.DT.id);
+        }
+        console.log("data modal: ", data)
+
+    }
+
+    const postNewAnswer = async ({
+        isCorrect,
+        answer,
+        idQuiz,
+    }: IAddAnswer) => {
+        const res = await fetch(`http://localhost:8081/api/v1/answer`, {
+            method: "POST",
+            body: JSON.stringify({
+                description: answer,
+                correct_answer: isCorrect,
+                question_id: idQuiz,
+            }),
+            headers: {
+                Authorization: `Bearer ${session.access_token}`
+            },
+        });
+
+        const data = await res.json();
+        if (data) {
+            message.success("Create new answer successfully!");
         }
         console.log("data modal: ", data)
     }
@@ -117,19 +170,25 @@ const ManageAnswer = (props: any) => {
         setListQuizMap(mappingListQuiz());
     }, []);
 
-    const handlePostNewAnswer = async () => {
-        postNewAnswer({ quizId, description, file })
-        console.log("check data before upload: ", quizId, description, file)
-    }
+
 
     const handleQuestion = (type: any, id: any) => {
         if (type === 'ADD') {
             const newQuestion = {
                 id: uuidv4(),
                 description: "",
-                image: "",
-                imageName: "",
+                image: File,
                 answers: [
+                    {
+                        id: uuidv4(),
+                        description: "",
+                        isCorrect: false,
+                    },
+                    {
+                        id: uuidv4(),
+                        description: "",
+                        isCorrect: false,
+                    },
                     {
                         id: uuidv4(),
                         description: "",
@@ -144,31 +203,55 @@ const ManageAnswer = (props: any) => {
                 let questionClone = questions;
                 questionClone = questions.filter((item: any) => item.id !== id)
                 setQuestions(questionClone)
-                console.log(questionClone)
-                console.log(id)
             }
         }
     }
 
-    const handleAnswer = (type: any, id: any) => {
-        if (type === 'ADD') {
-            const newAnswer = {
-                id: uuidv4(),
-                description: "",
-                isCorrect: false,
+    const handleOnChangeQuestion = (type: string, questionId: any, value: any) => {
+        if (type === 'QUESTION') {
+            let questionsClone = _.cloneDeep(questions);
+            let index = questionsClone.findIndex(item => item.id === questionId);
+            if (index > -1) {
+                questionsClone[index].description = value;
+                setQuestions(questionsClone);
+            }
+        } else if (type === 'ANSWER') {
+            let questionsClone = _.cloneDeep(questions);
+            console.log("quiestion: ", questionsClone)
+            let index = questionsClone.findIndex(item => item.id === questionId);
+            if (index > -1) {
+                const checkvari = questionsClone[index];
+                console.log("check quesionindex; ", checkvari)
+                let answerIndex = questionsClone[index].answers.map((item: any, index: any) => {
+                    item.id = questionId;
+                    item.description = value;
+                    return item;
+                })
+                console.log("answer Index: ", answerIndex)
             }
 
         }
+    }
 
-        if (type === 'REMOVE') {
-            {
-                let questionClone = questions;
-                questionClone = questions.filter((item: any) => item.id !== id)
-                setQuestions(questionClone)
-                console.log(questionClone)
-                console.log(id)
-            }
-        }
+    const handlePostNew = async (idQuiz: any) => {
+        const questionApi = await Promise.all(
+            questions.map(async (questionQuiz: any, index: any) => {
+                const test123 = await postNewQuestion({ quizId, description: questionQuiz.description, file })
+                console.log(test123);
+                // const idQuizs = test123.DT.id;
+                await Promise.all(questionQuiz.answers.forEach(async (item: any, index: any) => {
+                    console.log("questionQuiz:", questionQuiz)
+                    const metmoivailon = await postNewAnswer({
+                        isCorrect: item.isCorrect,
+                        answer: item.description,
+                        idQuiz:item.id,
+                    })
+                    console.log("fuck you: ", metmoivailon)
+                    // console.log("idQuestion: ", idQuestion)
+                }))
+            })
+        );
+        return questionApi;
     }
 
     return (
@@ -185,6 +268,7 @@ const ManageAnswer = (props: any) => {
                     />
                 </Space>
                 {questions && questions.map((item: any, index: any) => {
+
                     return (
                         <div style={{ marginTop: '20px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
@@ -194,7 +278,9 @@ const ManageAnswer = (props: any) => {
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                                 <div style={{ marginTop: '15px' }}>
-                                    <Input size="large" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Quiz description" style={{ width: '500px' }} />
+                                    <Input size="large" value={item.description}
+                                        onChange={(e) => handleOnChangeQuestion('QUESTION', item.id, e.target.value)}
+                                        placeholder="Quiz description" style={{ width: '500px' }} />
                                 </div>
                                 <div style={{ marginTop: '15px' }}>
                                     <Upload {...propsUpload}>
@@ -202,21 +288,23 @@ const ManageAnswer = (props: any) => {
                                     </Upload>
                                 </div>
                             </div>
-                            {questions && questions[index].answers.map((item: any) => {
+                            {questions && questions[index].answers.map((itemAnswer: any, index: any) => {
+
                                 return (
                                     <div style={{ margin: '15px 0 0 15px' }}>
-                                        <Input size="large" value={description} onChange={(e) => setDescription(e.target.value)} placeholder={`Answer 1`} style={{ width: '500px' }} />
-                                        <PlusCircleOutlined style={{ fontSize: '20px', cursor: 'pointer', marginLeft: '15px' }} />
-                                        <MinusCircleOutlined style={{ fontSize: '20px', cursor: 'pointer', marginLeft: '15px' }} />
+                                        <Checkbox onChange={onChange}>
+                                            <Input size="large" value={itemAnswer.description} onChange={(e) => handleOnChangeQuestion('ANSWER', item.id, e.target.value)} placeholder={`Answer ${index + 1}`} style={{ width: '500px' }} />
+                                        </Checkbox>
                                     </div>
                                 )
                             })}
 
+                            <Button type='primary' onClick={handlePostNew} style={{ marginTop: '15px' }}>Add quiz</Button>
                         </div>
                     )
                 })}
 
-                <Button type='primary' onClick={handlePostNewAnswer} style={{ marginTop: '15px' }}>Add quiz</Button>
+
             </div>
         </div>
     )

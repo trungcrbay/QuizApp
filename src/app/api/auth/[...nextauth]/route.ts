@@ -37,8 +37,6 @@ export const authOptions: AuthOptions = {
         //   }),
         //   headers: { "Content-Type": "application/json" },          
         // });
-
-
         const res = await sendRequest<IBackendRes<JWT>>({
           url: `http://localhost:8081/api/v1/login`,
           method: "POST",
@@ -49,14 +47,15 @@ export const authOptions: AuthOptions = {
         })
         // const userInfo = await res.json();
         const password = credentials?.password;
-        console.log("passsowrod: ",credentials?.password);
+        console.log("passsowrod: ", credentials?.password);
         // If no error and we have userInfo data, return it
         if (res && res.DT) {
           return res.DT as any;
         }
         // Return null if user data could not be retrieved
         else {
-          throw new Error(res.message as string);
+          // throw new Error(res.message as string);
+           return null;
         }
       },
     }),
@@ -86,7 +85,6 @@ export const authOptions: AuthOptions = {
           token.access_token = res.data?.access_token;
           token.refresh_token = res.data?.refresh_token;
           token.user = res.data.user;
-
         }
       }
       if (trigger === "signIn" && account?.provider === "credentials") {
@@ -107,6 +105,7 @@ export const authOptions: AuthOptions = {
       }
       return session;
     },
+
   },
 };
 const handler = NextAuth(authOptions);

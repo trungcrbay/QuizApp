@@ -10,6 +10,7 @@ import IconButton from '@mui/material/IconButton';
 import React, { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation'
 import { useSession, signIn, signOut } from "next-auth/react"
+import HomeIcon from '@mui/icons-material/Home';
 import Link from 'next/link'
 
 const AuthSignIn = (props: any) => {
@@ -184,14 +185,17 @@ const AuthSignIn = (props: any) => {
                                     bgcolor: "orange"
                                 }}
                             >
-                                < GoogleIcon titleAccess="Login with Google" 
-                                onClick={() => signIn('google')}
+                                < GoogleIcon titleAccess="Login with Google"
+                                    onClick={() => signIn('google')}
                                 />
                             </Avatar>
                         </Box>
-                        <Box sx={{marginTop:'15px',display:'flex',gap:'10px'}}>
+                        <Box sx={{ marginTop: '15px', display: 'flex', gap: '10px',alignItems:'center' }}>
                             <span>Have you not had an account yet?</span>
-                            <Link href={'/register'} style={{textDecoration:'none',color:'#FF0000'}}>Register</Link>
+                            <Link href={'/register'} style={{ textDecoration: 'none', color: '#FF0000' }}>Register</Link>
+                            <div style={{display:'flex',alignItems:'center',gap:'5px'}}>
+                                or <HomeIcon style={{cursor:'pointer'}} onClick={() => router.push('/')}/>
+                            </div>
                         </Box>
                     </div>
                 </Grid>

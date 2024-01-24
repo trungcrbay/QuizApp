@@ -3,7 +3,7 @@ import classes from './homepage.module.css';
 import { AnimatePresence, motion } from "framer-motion"
 import Link from 'next/link'
 import Box from '@mui/material/Box';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Grid from '@mui/material/Grid';
 import Accordion from '@mui/material/Accordion';
@@ -18,7 +18,8 @@ import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
-import Backdrop from '@mui/material/Backdrop';
+import Button from '@mui/material/Button';
+import { useRouter } from 'next/navigation'
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -26,15 +27,15 @@ const style = {
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: {
-    xs:300,
-    md:400,
-    lg:400
+    xs: 300,
+    md: 400,
+    lg: 400
   },
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
   p: 4,
-  color:'#000'
+  color: '#000'
 };
 
 
@@ -50,6 +51,8 @@ const HomePage = () => {
       linkRef.current.click();
     }
   };
+
+  const router = useRouter()
 
   const myRef = useRef(null);
 
@@ -471,10 +474,10 @@ const HomePage = () => {
               >
                 <Fade in={open}>
                   <Box sx={style}>
-                    <div style={{width:'100%',position:'relative'}}>
-                      <CloseIcon sx={{ position:'absolute' , right:'0',cursor:'pointer'}} onClick={() => handleClose()} />
+                    <div style={{ width: '100%', position: 'relative' }}>
+                      <CloseIcon sx={{ position: 'absolute', right: '0', cursor: 'pointer' }} onClick={() => handleClose()} />
                     </div>
-                    <h3 style={{paddingTop:'30px'}}>Use this account for testing this app</h3>
+                    <h3 style={{ paddingTop: '30px' }}>Use this account for testing this app</h3>
                     <div style={{ marginTop: '15px' }}>
                       <p id="transition-modal-title">
                         Username: trungnguyen@gmail.com
@@ -482,6 +485,10 @@ const HomePage = () => {
                       <p id="transition-modal-description">
                         Password: 123456
                       </p>
+                      <p style={{ color: '#FF0000', marginTop: '20px' }}>To get maximum experience, we recommend you should use PC/Laptop. Thanks!</p>
+                      <div style={{ width: '100%' }}>
+                        <Button variant="contained" sx={{ display: 'block', margin: '10px auto' }} onClick={() => router.push('/signin')}>LOGIN</Button>
+                      </div>
                     </div>
                   </Box>
                 </Fade>

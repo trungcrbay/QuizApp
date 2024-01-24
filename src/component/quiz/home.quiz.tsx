@@ -11,13 +11,14 @@ import Container from "@mui/material/Container";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion"
 import Link from 'next/link'
+import classes from './home.module.scss'
 
 const HomeQuiz = (props: any) => {
   const router = useRouter();
   const { dataQuiz } = props;
   console.log("dât quiz", dataQuiz);
   return (
-    <div className="homepage" style={{ height: '100%' }}>
+    <div className="homepage" style={{ height: dataQuiz.length > 0 ? '100%' : '100vh' }}>
       <Container>
         <AnimatePresence initial={true}>
           <motion.div
@@ -27,8 +28,8 @@ const HomeQuiz = (props: any) => {
             exit={{ opacity: 0 }}
             transition={{ type: "spring", stiffness: 100, ease: "linear" }}
             style={{ paddingTop: "100px" }}>
-              <Grid container spacing={2} sx={{margin:'0 auto'}}>
-              {dataQuiz &&
+            <Grid container spacing={2} sx={{ margin: '0 auto' }}>
+              {dataQuiz.length > 0 ?
                 dataQuiz.map((item: any) => {
                   return (
                     <Grid item md={4} xs={12}>
@@ -70,7 +71,33 @@ const HomeQuiz = (props: any) => {
                       </Card>
                     </Grid>
                   );
-                })}
+                })
+                :
+                <div style={{ width: '100%' }}>
+                  <img src="no_quiz.png" style={{ display: 'block', margin: '0 auto' }} className={classes.no_data_img} />
+                  <div style={{ textAlign: 'center' }}>
+                    <Typography
+                      sx={{
+                        fontSize: {
+                          xs: 16,
+                          md: 20,
+                          lg: 20
+                        }
+                      }} variant="subtitle1">Not found any quiz</Typography>
+                    <Typography
+                      sx={{
+                        fontSize: {
+                          xs: 16,
+                          md: 20,
+                          lg: 20
+                        }
+                      }}
+                      variant="subtitle2">Please contact admin or using your account that I provided at gift</Typography>
+                    <Button variant="contained" color="error" sx={{ marginTop: '10px', borderRadius: '10px' }}>
+                      <Link href="/" style={{ textDecoration: 'none', color: '#fff' }}>&lt;&lt;&lt;  Return Home</Link>
+                    </Button>
+                  </div>
+                </div>}
             </Grid></motion.div></AnimatePresence>
 
 

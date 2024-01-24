@@ -23,6 +23,7 @@ const AuthRegister = (props: any) => {
     const router = useRouter()
     console.log("check data: ", data)
     console.log("check session: ", session)
+    const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
@@ -51,6 +52,10 @@ const AuthRegister = (props: any) => {
         setState({ ...state, open: false });
     };
 
+    const handleCloseSnackbar = () => {
+        setOpenSnackbar(false);
+    };
+
     const registerParticipant = async ({ email, username, password }: IRegister) => {
         const res = await fetch(`http://localhost:8081/api/v1/register`, {
             method: "POST",
@@ -65,8 +70,9 @@ const AuthRegister = (props: any) => {
         });
         const data = await res.json()
         if (data) {
-            handleClick({ vertical: 'top', horizontal: 'center' })
+            setOpenSnackbar(true);
             console.log("res: ", data)
+            
         }
     };
 
@@ -226,12 +232,12 @@ const AuthRegister = (props: any) => {
                         </Box>
                         <Snackbar
                             anchorOrigin={{ vertical, horizontal }}
-                            open={open}
+                            open={openSnackbar}
                             sx={{ background: 'transparent' }}
-                            autoHideDuration={3000}
+                            autoHideDuration={2000}
                             onClose={handleClose}
                             message={
-                                <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
+                                <Alert icon={<CheckIcon fontSize="inherit" />} onClose={handleCloseSnackbar} severity="success">
                                     Create new user successfully!
                                 </Alert>
                             }
