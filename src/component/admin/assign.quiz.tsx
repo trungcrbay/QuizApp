@@ -48,7 +48,7 @@ const AssignQuiz = (props: any) => {
     }, []);
 
     const assignQuizToParticipant = async ({ quizId, userId }: IAssignQuiz) => {
-        const res = await fetch(`http://localhost:8081/api/v1/quiz-assign-to-user`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/quiz-assign-to-user`, {
             method: "POST",
             body: JSON.stringify({
                 // ts-ignore

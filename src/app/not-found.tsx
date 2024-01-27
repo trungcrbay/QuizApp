@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Image from 'next/image'
 
 export default function NotFound() {
     return (
@@ -10,9 +11,11 @@ export default function NotFound() {
             md:'700px',
             lg:'700px'
         }, margin: '0 auto',textAlign:'center' }}>
-            <img src={'400.gif'}
-                height={'100%'}
-                width={'100%'}
+            <Image src={'400.gif'}
+                style={{
+                    height:'100%',
+                    width:'100%'
+                }}
                 sizes='100vw'
                 alt={`A cute animal!`}
             />

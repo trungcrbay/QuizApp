@@ -77,7 +77,7 @@ const ModalUpdateUser = (props: any) => {
     formData.append("role", role);
     formData.append("userImage", image);
 
-    const res = await fetch(`http://localhost:8081/api/v1/participant`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/participant`, {
       method: "PUT",
       body: formData
     });

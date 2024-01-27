@@ -57,7 +57,7 @@ const AuthRegister = (props: any) => {
     };
 
     const registerParticipant = async ({ email, username, password }: IRegister) => {
-        const res = await fetch(`http://localhost:8081/api/v1/register`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/register`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

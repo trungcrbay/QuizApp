@@ -6,12 +6,12 @@ import { redirect } from 'next/navigation'
 
 const DashboardQuiz = async () => {
   const session = await getServerSession(authOptions);
-  console.log("check session: ",session)
+  console.log("check session: ", session)
 
   const getAllQuiz = async () => {
     const res = await sendRequest<IBackendRes<IGetQuizByParticipant>>({
-      url:`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/quiz-by-participant`,
-      method:'GET',
+      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/quiz-by-participant`,
+      method: 'GET',
       headers: {
         Authorization: `Bearer ${session?.access_token}`,
       },

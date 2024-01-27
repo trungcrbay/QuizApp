@@ -32,7 +32,7 @@ const ModalProfile = (props: any) => {
     const [username, setUsername] = React.useState("");
     const [accessToken, setAccessToken] = React.useState("");
     const [image, setImage] = React.useState<File | null>(null);
-    const [isChangePass,setIsChangePass] = React.useState<boolean>(false);
+    const [isChangePass, setIsChangePass] = React.useState<boolean>(false);
     const router = useRouter()
 
     React.useEffect(() => {
@@ -60,7 +60,7 @@ const ModalProfile = (props: any) => {
         //@ts-ignore
         formData.append("userImage", image);
 
-        const res = await fetch(`http://localhost:8081/api/v1/profile`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/profile`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -88,14 +88,14 @@ const ModalProfile = (props: any) => {
             >
                 <Box sx={style}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <Typography id="modal-modal-title" variant="h6" component="h2" sx={{color:'#000'}}>
+                        <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ color: '#000' }}>
                             Profile
                         </Typography>
                         <CloseIcon sx={{ cursor: 'pointer' }}
                             onClick={() => handleClose()} />
                     </Box>
                     {editUsername === false ?
-                        <Typography id="modal-modal-description" sx={{ mt: 2, display: 'flex', gap: '5px',color:'#000' }}>
+                        <Typography id="modal-modal-description" sx={{ mt: 2, display: 'flex', gap: '5px', color: '#000' }}>
                             Email: {username}
                             <EditIcon onClick={() => setEditUsername(true)} style={{ cursor: 'pointer' }} />
                         </Typography>
@@ -110,7 +110,7 @@ const ModalProfile = (props: any) => {
                                 style={{ height: '30px' }}
                             >OK</Button>
                         </Box>}
-                    <Typography id="modal-modal-description" sx={{ mt: 2, display: 'flex', gap: '5px',color:'#000' }}>
+                    <Typography id="modal-modal-description" sx={{ mt: 2, display: 'flex', gap: '5px', color: '#000' }}>
                         Role: {session?.role}
                     </Typography>
                     <Button variant="contained"
@@ -119,12 +119,15 @@ const ModalProfile = (props: any) => {
                             setIsChangePass(true);
                             router.push('/password')
                         }}
-                        style={{ height: '30px' ,marginTop:'20px'}}
+                        style={{ height: '30px', marginTop: '20px' }}
                     >Password</Button>
-                    
+
                     <Typography id="modal-modal-description" sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
-                        <img
-                            src={`data:image/jpeg;base64, ${image}`} />
+                        {image ? <img
+                            src={`data:image/jpeg;base64, ${image}`} /> 
+                        : <img
+                        src={'no-image.jpg'} style={{width:'100%'}}/> 
+                        }
                     </Typography>
                     <Box sx={{ display: 'flex', gap: '10px' }}>
                         <Button variant="contained" sx={{ height: '30px' }}>

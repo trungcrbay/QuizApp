@@ -64,7 +64,7 @@ const ModalAddNewQuiz = (props: any) => {
     formData.append("difficulty", difficulty);
     formData.append("quizImage", file);
 
-    const res = await fetch(`http://localhost:8081/api/v1/quiz`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/quiz`, {
       method: "POST",
       body: formData,
       headers: {

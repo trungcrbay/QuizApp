@@ -132,7 +132,7 @@ const PageChangePassword = (props: any) => {
     };
 
     const handleChangePassword = async () => {
-        const res = await fetch(`http://localhost:8081/api/v1/change-password`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/change-password`, {
             method: "POST",
             body: JSON.stringify({
                 // ts-ignore

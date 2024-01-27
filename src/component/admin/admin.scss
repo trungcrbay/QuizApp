@@ -1,3 +1,5 @@
+@import '../../app/globals.scss';
+
 @include screen(mobile) {
     .ant-pagination {
         width   : 500px;

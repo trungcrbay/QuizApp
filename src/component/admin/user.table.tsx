@@ -56,7 +56,7 @@ const UserTable = (props: any) => {
   };
 
   const deleteParticipant = async (dataUpdate: any) => {
-    const res = await fetch(`http://localhost:8081/api/v1/participant`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/participant`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -73,7 +73,7 @@ const UserTable = (props: any) => {
   };
 
   const getParticipantPaginate = async () => {
-    const res = await fetch(`http://localhost:8081/api/v1/participant?page=${current}&limit=${pageSize}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/participant?page=${current}&limit=${pageSize}`, {
       method: "GET",
     });
     const data = await res.json();

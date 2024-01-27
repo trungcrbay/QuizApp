@@ -6,7 +6,7 @@ import { getServerSession } from "next-auth";
 const Admin = async () => {
     const session = await getServerSession(authOptions);
 
-    const resDashboard = await fetch(`http://localhost:8081/api/v1/overview`, {
+    const resDashboard = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/overview`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",

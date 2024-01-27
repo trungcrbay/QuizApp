@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import Link from 'next/link'
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
+import Image from 'next/image'
 export default function Error({
     error,
     reset,
@@ -23,9 +24,10 @@ export default function Error({
             }, margin: '0 auto', textAlign: 'center'
         }}>
 
-            <img
+            <Image
                 src="/error.jpg"
                 alt="Error picture"
+                
             />
             <h2>Something went wrong</h2>
             <Button variant="contained" color="error" sx={{ marginTop: '10px', borderRadius: '10px' }}>

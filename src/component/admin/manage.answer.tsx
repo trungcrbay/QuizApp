@@ -109,7 +109,7 @@ const ManageAnswer = (props: any) => {
         //@ts-ignore
         formData.append("questionImage", file);
 
-        const res = await fetch(`http://localhost:8081/api/v1/question`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/question`, {
             method: "POST",
             body: formData,
             headers: {
@@ -119,12 +119,13 @@ const ManageAnswer = (props: any) => {
         });
 
         const data = await res.json();
-        
+
         if (data) {
             message.success("Create new quiz successfully!");
             setIdQuestion(data.DT.id);
         }
         console.log("data modal: ", data)
+        return data;
 
     }
 
@@ -133,16 +134,18 @@ const ManageAnswer = (props: any) => {
         answer,
         idQuiz,
     }: IAddAnswer) => {
-        const res = await fetch(`http://localhost:8081/api/v1/answer`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/answer`, {
             method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${session.access_token}`
+            },
             body: JSON.stringify({
                 description: answer,
                 correct_answer: isCorrect,
                 question_id: idQuiz,
             }),
-            headers: {
-                Authorization: `Bearer ${session.access_token}`
-            },
+
         });
 
         const data = await res.json();
@@ -150,6 +153,7 @@ const ManageAnswer = (props: any) => {
             message.success("Create new answer successfully!");
         }
         console.log("data modal: ", data)
+        return data;
     }
 
     const mappingListQuiz = () => {
@@ -220,36 +224,56 @@ const ManageAnswer = (props: any) => {
             if (index > -1) {
                 const checkvari = questionsClone[index];
                 console.log("check quesionindex; ", checkvari)
-                let answerIndex = questionsClone[index].answers.map((item: any, index: any) => {
+                questionsClone[index].answers = questionsClone[index].answers.map((item: any, index: any) => {
                     item.id = questionId;
                     item.description = value;
                     return item;
                 })
-                console.log("answer Index: ", answerIndex)
+                console.log("answer Index: ", questionsClone[index].answers)
             }
-
         }
     }
 
-    const handlePostNew = async (idQuiz: any) => {
-        const questionApi = await Promise.all(
-            questions.map(async (questionQuiz: any, index: any) => {
-                const test123 = await postNewQuestion({ quizId, description: questionQuiz.description, file })
-                console.log(test123);
+    const handleOnChangeAnswer = (type: string, questionId: any, answerId: any, value: any) => {
+        let questionsClone = _.cloneDeep(questions);
+        console.log("quiestion: ", questionsClone)
+        let index = questionsClone.findIndex(item => item.id === questionId);
+        if (index > -1) {
+            const checkvari = questionsClone[index];
+            console.log("check quesionindex; ", checkvari)
+            questionsClone[index].answers.map((item: any, index: any) => {
+                if (item.id === answerId) {
+                    if (type === 'CHECKBOX') {
+                        item.isCorrect = value;
+                    } else if (type === 'INPUT') {
+                        item.description = value;
+                    }
+                    return item;
+                }
+            })
+            setQuestions(questionsClone);
+        }
+    }
+
+    const handlePostNew = async () => {
+        //syntax: Promise.all(iterable)
+        await Promise.all(
+            questions.map(async (questionQuiz: any) => {
+                const dataPostQuestion = await postNewQuestion({ quizId, description: questionQuiz.description, file }) //ko cần gội await vì đã trả về 1 Promise
                 // const idQuizs = test123.DT.id;
-                await Promise.all(questionQuiz.answers.forEach(async (item: any, index: any) => {
-                    console.log("questionQuiz:", questionQuiz)
-                    const metmoivailon = await postNewAnswer({
+                await Promise.all(questionQuiz.answers.map(async (item: any) => {
+                    await postNewAnswer({
                         isCorrect: item.isCorrect,
                         answer: item.description,
-                        idQuiz:item.id,
+                        //@ts-ignore
+                        idQuiz: dataPostQuestion.DT.id,
                     })
-                    console.log("fuck you: ", metmoivailon)
-                    // console.log("idQuestion: ", idQuestion)
+                    //@ts-ignore
+                    console.log("description", item.description, "dung hay sai", item.isCorrect, " id:", dataPostQuestion.DT.id)
                 }))
-            })
-        );
-        return questionApi;
+                console.log("check dataPostQuestion: ", dataPostQuestion)
+            }));
+
     }
 
     return (
@@ -280,18 +304,20 @@ const ManageAnswer = (props: any) => {
                                         onChange={(e) => handleOnChangeQuestion('QUESTION', item.id, e.target.value)}
                                         placeholder="Quiz description" style={{ width: '500px' }} />
                                 </div>
+
                                 <div style={{ marginTop: '15px' }}>
                                     <Upload {...propsUpload}>
                                         <Button icon={<UploadOutlined />}>Upload Image</Button>
                                     </Upload>
                                 </div>
                             </div>
+
                             {questions && questions[index].answers.map((itemAnswer: any, index: any) => {
 
                                 return (
                                     <div style={{ margin: '15px 0 0 15px' }}>
-                                        <Checkbox onChange={onChange} value={item.isCorrect}>
-                                            <Input size="large" value={itemAnswer.description} onChange={(e) => handleOnChangeQuestion('ANSWER', item.id, e.target.value)} placeholder={`Answer ${index + 1}`} style={{ width: '500px' }} />
+                                        <Checkbox onChange={(e) => handleOnChangeAnswer('CHECKBOX', item.id, itemAnswer.id, e.target.checked)} checked={itemAnswer.isCorrect}>
+                                            <Input size="large" value={itemAnswer.description} onChange={(e) => handleOnChangeAnswer('INPUT', item.id, itemAnswer.id, e.target.value)} placeholder={`Answer ${index + 1}`} style={{ width: '500px' }} />
                                         </Checkbox>
                                     </div>
                                 )

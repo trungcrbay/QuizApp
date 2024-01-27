@@ -61,7 +61,7 @@ const ManageQuestion = (props: any) => {
         //@ts-ignore
         formData.append("questionImage", file);
 
-        const res = await fetch(`http://localhost:8081/api/v1/question`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/question`, {
             method: "POST",
             body: formData,
             headers: {

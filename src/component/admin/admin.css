@@ -1,3 +1,42 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --fg: #000000;
+  --bg: #9be9fb;
+  --bg-accordian: #fff;
+  --footer: #000f24;
+  --background: url("https://img.freepik.com/premium-photo/light-blue-defocus-glitter-defocus-new-year-christmas_325845-2671.jpg") ;
+}
+
+[data-theme=dark] {
+  --fg: #fff;
+  --bg: #001e3c;
+  --footer: #5cd9f7;
+  --bg-accordian: #252c32;
+  --background: url("/theme.jpg");
+}
+
+.homepage {
+  background-image: var(--background);
+  width: 100%;
+  height: 100vh;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.homepage::after {
+  content: "";
+  position: absolute;
+  background: #ccc;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.3;
+}
+
 @media (max-width: 450px) {
   .ant-pagination {
     width: 500px;

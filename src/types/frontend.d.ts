@@ -99,5 +99,4 @@ declare global {
         image: File | null;
     }
 
-
 }

@@ -16,6 +16,7 @@ import ModalQuizResult from "./modal.result";
 import RightContent from "./right.content";
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
+import Image from 'next/image'
 
 const DetailQuiz = (props: any) => {
   const { detailDataQuiz, session } = props;
@@ -33,7 +34,7 @@ const DetailQuiz = (props: any) => {
   const handleOpen = () => setOpen(true);
   const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>, id: any, quizId: any) => {
     const currentAnswers = _.cloneDeep(dataQuiz[indexQuiz].answers); //Clone data
-    console.log("currentAnswers: ", currentAnswers)
+    console.log("currentAnswers: ", currentAnswers);
     const currentSelectedAnswers = currentAnswers.map((item: any) => {
       if (+item.id === +quizId) {
         item.isSelected = true;
@@ -45,10 +46,10 @@ const DetailQuiz = (props: any) => {
     });
     dataQuiz[indexQuiz].answers = currentSelectedAnswers; // Cập nhật dữ liệu gốc
     setDataquiz(dataQuiz);
-  }
+  };
 
   const resResult = async () => {
-    const res = await fetch("http://localhost:8081/api/v1/quiz-submit", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/quiz-submit`, {
       method: "POST",
       body: JSON.stringify({
         quizId: +quizId,
@@ -64,7 +65,7 @@ const DetailQuiz = (props: any) => {
       console.log("check result data: ", data.DT)
       setResult(data.DT)
     }
-  }
+  };
 
   const handleSubmit = () => {
     console.log("dataquiz: ", dataQuiz)
@@ -93,7 +94,7 @@ const DetailQuiz = (props: any) => {
     }
     setTimer(0);
     setIsEndQUiz(true);
-  }
+  };
 
   const handleNextQuiz = () => {
     if (indexQuiz === detailDataQuiz.length - 1) return;
@@ -108,7 +109,7 @@ const DetailQuiz = (props: any) => {
     if (answerApi.length > 0) {
       resResult();
     }
-  }, [answerApi])
+  }, [answerApi]);
 
   return (
     <Container>
@@ -166,7 +167,7 @@ const DetailQuiz = (props: any) => {
                     {dataQuiz[indexQuiz].answers.map(
                       (quiz: any, index: number) => {
                         return (
-                          <div>
+                          <div key={`quiz-${index}`}>
                             <FormControlLabel
                               value={quiz.description}
                               control={

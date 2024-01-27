@@ -38,7 +38,7 @@ export const authOptions: AuthOptions = {
         //   headers: { "Content-Type": "application/json" },          
         // });
         const res = await sendRequest<IBackendRes<JWT>>({
-          url: `http://localhost:8081/api/v1/login`,
+          url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/login`,
           method: "POST",
           body: {
             email: credentials?.email,

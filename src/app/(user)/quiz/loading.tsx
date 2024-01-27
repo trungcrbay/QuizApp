@@ -1,5 +1,6 @@
 'use client'
 import CircularProgress from '@mui/material/CircularProgress';
+import Image from 'next/image'
 
 export default function Loading() {
     // Or a custom loading skeleton component
@@ -9,7 +10,7 @@ export default function Loading() {
             paddingTop: '100px',
             height: '100vh',
         }} className="homepage">
-            <img src={'https://ugokawaii.com/wp-content/uploads/2022/12/quiz-time.gif'} width={250} height={250}/>
+            <Image alt='loading image' src={'/quiz-time.gif'} width={250} height={250}/>
             {/* <CircularProgress style={{
                 position: 'absolute',
                 transform: 'translate(-50%, -50%)',

@@ -48,7 +48,7 @@ const QuizTable = (props: any) => {
 
   const deleteQuiz = async (id:number) => {
     //@ts-ignore
-    const res = await fetch(`http://localhost:8081/api/v1/quiz/${id}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/quiz/${id}`, {
       method: "DELETE",
       headers: {
         // "Content-Type": "application/json",
