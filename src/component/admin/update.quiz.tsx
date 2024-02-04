@@ -86,16 +86,14 @@ const ModalUpdateQuiz = (props: any) => {
             method: "PUT",
             body: formData,
             headers: {
-                // "Content-Type": "application/json",
                 Authorization: `Bearer ${access_token}`
             },
         });
         const data = await res.json();
-        console.log(data);
+    
     };
 
     const handleUpdateQuiz = () => {
-        console.log("check data before update: ", id, name, description, difficulty, file)
         //@ts-ignore
         updateQuiz({id, name, description, difficulty, file })
     }

@@ -33,7 +33,7 @@ const onFinishFailed = (errorInfo: any) => {
 
 const ModalUpdateUser = (props: any) => {
   const { open, onCancel, dataUpdate } = props;
-  console.log("check data da update modal:", dataUpdate);
+
   const [username, setUsername] = useState("");
   const [id, setId] = useState(null);
   const [role, setRole] = useState("");
@@ -82,7 +82,7 @@ const ModalUpdateUser = (props: any) => {
       body: formData
     });
     const data = await res.json();
-    console.log(data);
+
   };
 
   const handleUpdateParticipant = () => {

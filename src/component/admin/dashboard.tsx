@@ -4,7 +4,6 @@ import CountUp from "react-countup";
 
 const AdminDashboard = (props: any) => {
   const { dataDashboard } = props;
-  console.log("check data dashboard: ", dataDashboard);
 
   return (
     <div>

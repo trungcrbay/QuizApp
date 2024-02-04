@@ -19,7 +19,6 @@ const onFinishFailed = (errorInfo: any) => {
 const ModalViewUser = (props: any) => {
   const {  open, onOk, onCancel, dataUpdate } =
     props;
-  console.log("check data update modal:", dataUpdate);
 
   return (
     <>

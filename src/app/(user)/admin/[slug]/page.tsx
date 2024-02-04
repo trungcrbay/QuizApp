@@ -48,7 +48,6 @@ const Admin = async () => {
 
   const dataQuiz = await fetchAllQuiz()
 
-  console.log("check all dataquiz: ", dataQuiz);
   return (
     <div style={{ height: "100vh" }}>
       <SiderAdmin listUser={data.DT} listQuiz={dataQuiz.DT} session={session} />

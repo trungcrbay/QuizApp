@@ -5,12 +5,13 @@ import CountDown from "../countdown/countdown.time";
 import ReplayIcon from "@mui/icons-material/Replay";
 import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
+import { memo } from "react";
 
 const RightContent = (props: any) => {
   const { open, setOpen, countCorrect, countTotal, handleOpen,
     handleSubmit, timer, setTimer, isEndQuiz, setIsEndQuiz,
     dataQuiz, indexQuiz, setIndexQuiz, isCheckSelectedAnswer } = props
-  console.log("check dataQuiz ngay: ", dataQuiz)
+    console.log("re render")
   return (
     <Box
       sx={{ border: "1px solid var(--fg)", width: "100%", height: "500px" }}
@@ -53,7 +54,7 @@ const RightContent = (props: any) => {
         </Button>
       </Box>
       <Divider sx={{ background: 'var(--fg)' }} />
-      {/* content 2 */}
+
       <Box sx={{
         display: 'flex', gap: {
           xs: '30px',
@@ -65,7 +66,7 @@ const RightContent = (props: any) => {
         {dataQuiz.map((item: any, index: number) => {
           return (
             <button
-              key={index} // Thêm key prop cho mỗi button
+              key={index} 
               style={{
                 borderRadius: '1000px',
                 width: '45px',

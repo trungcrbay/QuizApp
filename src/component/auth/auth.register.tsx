@@ -21,8 +21,7 @@ const AuthRegister = (props: any) => {
     //@ts-ignore
     const { data, session } = useSession();
     const router = useRouter()
-    console.log("check data: ", data)
-    console.log("check session: ", session)
+
     const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [username, setUsername] = useState<string>("");
@@ -71,8 +70,7 @@ const AuthRegister = (props: any) => {
         const data = await res.json()
         if (data) {
             setOpenSnackbar(true);
-            console.log("res: ", data)
-            
+        
         }
     };
 
@@ -100,8 +98,6 @@ const AuthRegister = (props: any) => {
             setErrorPassword("Password is not empty.")
             return;
         }
-
-        console.log(">>> check username: ", username, ' pass: ', password, ' email: ', email)
         registerParticipant({ email, username, password })
         
     }

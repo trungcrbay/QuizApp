@@ -7,15 +7,15 @@ const AssignQuiz = (props: any) => {
     const [listUserMap, setListUserMap] = React.useState([]);
     const [quizId, setQuizId] = React.useState<any>(0);
     const [userId, setUserId] = React.useState<any>(0);
-    console.log("check id: ", quizId, userId)
+
     const handleChangeQuiz = (value: string) => {
         setQuizId(value);
-        console.log(`selected ${value}`);
+      
     };
 
     const handleChangeUser = (value: string) => {
         setUserId(value)
-        console.log(`selected ${value}`);
+      
     };
 
     const mappingListQuiz = () => {

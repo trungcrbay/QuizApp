@@ -19,10 +19,8 @@ interface DataType {
 const QuizTable = (props: any) => {
   const { listUser , listQuiz , session } = props;
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [isModalQuizOpen, setIsModalQuizOpen] = useState<boolean>(false);
   const [isModalUpdate, setIsModalUpdate] = useState<boolean>(false);
   const [dataUpdate, setDataUpdate] = useState({});
-  const [isModalAddUser, setIsModalAddUser] = useState<boolean>(false);
   const [isModalAddQuiz, setIsModalAddQuiz] = useState<boolean>(false);
   const router = useRouter()
 
@@ -44,20 +42,15 @@ const QuizTable = (props: any) => {
     setDataUpdate({});
   };
 
-  console.log("dataUpdate.id" , dataUpdate.id)
+  //@ts-ignore
 
   const deleteQuiz = async (id:number) => {
     //@ts-ignore
     const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/quiz/${id}`, {
       method: "DELETE",
       headers: {
-        // "Content-Type": "application/json",
         Authorization: `Bearer ${session.access_token}`
       },
-      // body: JSON.stringify({
-      //   // ts-ignore
-      //   id: dataUpdate,
-      // }),
     });
     if (res) {
       message.success("Deleted successfully!");
@@ -126,9 +119,6 @@ const QuizTable = (props: any) => {
     },
   ];
 
-
-  console.log("check super quiz:", listQuiz);
-  console.log("check quiz session:", session.access_token);
 
   return (
     <>

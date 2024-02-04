@@ -16,7 +16,6 @@ import ModalQuizResult from "./modal.result";
 import RightContent from "./right.content";
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
-import Image from 'next/image'
 
 const DetailQuiz = (props: any) => {
   const { detailDataQuiz, session } = props;
@@ -32,9 +31,10 @@ const DetailQuiz = (props: any) => {
   const params = useParams<{ slug: string }>();
   const quizId = params.slug
   const handleOpen = () => setOpen(true);
+
   const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>, id: any, quizId: any) => {
-    const currentAnswers = _.cloneDeep(dataQuiz[indexQuiz].answers); //Clone data
-    console.log("currentAnswers: ", currentAnswers);
+    const currentAnswers = _.cloneDeep(dataQuiz[indexQuiz].answers); 
+
     const currentSelectedAnswers = currentAnswers.map((item: any) => {
       if (+item.id === +quizId) {
         item.isSelected = true;
@@ -44,7 +44,7 @@ const DetailQuiz = (props: any) => {
       }
       return item;
     });
-    dataQuiz[indexQuiz].answers = currentSelectedAnswers; // Cập nhật dữ liệu gốc
+    dataQuiz[indexQuiz].answers = currentSelectedAnswers; 
     setDataquiz(dataQuiz);
   };
 
@@ -62,13 +62,13 @@ const DetailQuiz = (props: any) => {
     });
     var data = await res.json();
     if (data) {
-      console.log("check result data: ", data.DT)
+    
       setResult(data.DT)
     }
   };
 
   const handleSubmit = () => {
-    console.log("dataquiz: ", dataQuiz)
+
     let payload: Payload = {
       quizId: +quizId,
       answers: []
@@ -79,7 +79,7 @@ const DetailQuiz = (props: any) => {
         let questionId = question.id;
         let userAnswerId: any[] = [];
         question.answers.forEach((item: any) => {
-          console.log("itemm:", item)
+
           if (item.isSelected === true) {
             userAnswerId.push(item.id)
           }

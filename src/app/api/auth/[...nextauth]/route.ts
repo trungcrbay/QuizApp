@@ -55,13 +55,16 @@ export const authOptions: AuthOptions = {
         // Return null if user data could not be retrieved
         else {
           // throw new Error(res.message as string);
-           return null;
+          return null;
         }
       },
     }),
     GithubProvider({
       clientId: process.env.GITHUB_ID!,
       clientSecret: process.env.GITHUB_SECRET!,
+      authorization: {
+        url: 'https://quiz-app-9x73.vercel.app/'
+      }
     }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,

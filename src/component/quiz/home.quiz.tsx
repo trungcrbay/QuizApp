@@ -8,15 +8,12 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
-import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion"
 import Link from 'next/link'
 import classes from './home.module.scss'
 
 const HomeQuiz = (props: any) => {
-  const router = useRouter();
   const { dataQuiz } = props;
-  console.log("dât quiz", dataQuiz);
   return (
     <div className="homepage" style={{ height: dataQuiz.length > 0 ? '100%' : '100vh' }}>
       <Container>

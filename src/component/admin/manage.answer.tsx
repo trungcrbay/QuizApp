@@ -23,7 +23,6 @@ const ManageAnswer = (props: any) => {
     const [quizId, setQuizId] = React.useState<any>(0);
     const [description, setDescription] = React.useState<string>("");
     const [idQuestion, setIdQuestion] = React.useState<any>(0);
-    const [inputData, setInputData] = React.useState<any[]>([])
     const [questions, setQuestions] = React.useState([
         {
             id: uuidv4(),
@@ -49,23 +48,9 @@ const ManageAnswer = (props: any) => {
         }
     ])
 
-    const onChange: CheckboxProps['onChange'] = (e) => {
-        console.log(`checked = ${e.target.checked}`);
-    };
-
-    const handleChange = (e: any) => {
-        const { id, value } = e.target;
-
-        // Take the previous state (object), and update it
-        // by spreading (copying) out the previous object,
-        // and adding a new property with the id as key
-        // and the value as the value.
-        setInputData(prev => ({ ...prev, [id]: value }));
-    }
-
     const handleChangeQuiz = (value: string) => {
         setQuizId(value);
-        console.log(`selected ${value}`);
+   
     };
 
     const propsUpload: UploadProps = {
@@ -95,7 +80,6 @@ const ManageAnswer = (props: any) => {
 
     }, [file])
 
-    console.log("check file: ", file)
 
     const postNewQuestion = async ({
         quizId,
@@ -124,7 +108,6 @@ const ManageAnswer = (props: any) => {
             message.success("Create new quiz successfully!");
             setIdQuestion(data.DT.id);
         }
-        console.log("data modal: ", data)
         return data;
 
     }
@@ -152,7 +135,6 @@ const ManageAnswer = (props: any) => {
         if (data) {
             message.success("Create new answer successfully!");
         }
-        console.log("data modal: ", data)
         return data;
     }
 
@@ -219,28 +201,27 @@ const ManageAnswer = (props: any) => {
             }
         } else if (type === 'ANSWER') {
             let questionsClone = _.cloneDeep(questions);
-            console.log("quiestion: ", questionsClone)
+        
             let index = questionsClone.findIndex(item => item.id === questionId);
             if (index > -1) {
                 const checkvari = questionsClone[index];
-                console.log("check quesionindex; ", checkvari)
+          
                 questionsClone[index].answers = questionsClone[index].answers.map((item: any, index: any) => {
                     item.id = questionId;
                     item.description = value;
                     return item;
                 })
-                console.log("answer Index: ", questionsClone[index].answers)
             }
         }
     }
 
     const handleOnChangeAnswer = (type: string, questionId: any, answerId: any, value: any) => {
         let questionsClone = _.cloneDeep(questions);
-        console.log("quiestion: ", questionsClone)
+  
         let index = questionsClone.findIndex(item => item.id === questionId);
         if (index > -1) {
             const checkvari = questionsClone[index];
-            console.log("check quesionindex; ", checkvari)
+   
             questionsClone[index].answers.map((item: any, index: any) => {
                 if (item.id === answerId) {
                     if (type === 'CHECKBOX') {
@@ -269,9 +250,8 @@ const ManageAnswer = (props: any) => {
                         idQuiz: dataPostQuestion.DT.id,
                     })
                     //@ts-ignore
-                    console.log("description", item.description, "dung hay sai", item.isCorrect, " id:", dataPostQuestion.DT.id)
+
                 }))
-                console.log("check dataPostQuestion: ", dataPostQuestion)
             }));
 
     }

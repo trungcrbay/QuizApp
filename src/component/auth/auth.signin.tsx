@@ -17,8 +17,7 @@ const AuthSignIn = (props: any) => {
     //@ts-ignore
     const { data, session } = useSession();
     const router = useRouter()
-    console.log("check data: ", data)
-    console.log("check session: ", session)
+
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
@@ -51,7 +50,7 @@ const AuthSignIn = (props: any) => {
             setErrorPassword("Password is not empty.")
             return;
         }
-        console.log(">>> check username: ", username, ' pass: ', password)
+
 
     }
 
@@ -60,7 +59,7 @@ const AuthSignIn = (props: any) => {
     }
 
     const keyDownHandler = (event: React.KeyboardEvent) => {
-        console.log(event.key)
+
         if (event.key === 'Enter') {
             handleSubmit();
         }

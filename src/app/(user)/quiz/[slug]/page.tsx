@@ -27,8 +27,7 @@ const DetailQuizId = async ({ params }: { params: { slug: string } }) => {
     return res;
   }
   const data = await getDetailQuiz();
-  console.log("chekc data quiz:", data);
-  console.log("text data: ", data.DT!.qa)
+
   return (
     <div style={{ paddingTop: '100px', height: '100%' }} className="homepage">
       <DetailQuiz detailDataQuiz={data.DT!.qa} session={session?.access_token} />

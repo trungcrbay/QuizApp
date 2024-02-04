@@ -146,7 +146,6 @@ const PageChangePassword = (props: any) => {
         });
         const data = await res.json()
         if (data.EC === 0) {
-            console.log(data)
             setOpen(true);
             setSuccessAlert(true);
             setContentAlert(data.EM)

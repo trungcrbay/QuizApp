@@ -18,7 +18,7 @@ const HistoryPage = async () => {
         return res;
     }
     const data = await fetchHistory();
-    console.log("check data history: ", data.DT)
+
     return (
         <>
             <HistoryUser historyData={data.DT} />

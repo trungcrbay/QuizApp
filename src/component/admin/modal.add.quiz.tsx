@@ -26,7 +26,6 @@ const ModalAddNewQuiz = (props: any) => {
   const [description, setDescription] = useState("");
   const [name, setName] = useState("");
   const [difficulty, setDifficulty] = useState("");
-  const [quizImage, setQuizImage] = useState<File | null>(null);
   const [file, setFile] = useState<File | null>(null);
 
   const propsUpload: UploadProps = {
@@ -68,7 +67,6 @@ const ModalAddNewQuiz = (props: any) => {
       method: "POST",
       body: formData,
       headers: {
-        // "Content-Type": "application/json",
         Authorization: `Bearer ${access_token}`
       },
     });
@@ -77,7 +75,7 @@ const ModalAddNewQuiz = (props: any) => {
     if (data) {
       message.success("Create new quiz successfully!");
     }
-    console.log("data modal: ", data.DT)
+
   };
 
   useEffect(() => {
@@ -85,7 +83,6 @@ const ModalAddNewQuiz = (props: any) => {
   }, [file])
 
   const handleOkAddQuiz = async () => {
-    console.log("chekc data before upload: ", name, description, difficulty, file)
     //@ts-ignore
     postNewQuiz({ name, description, difficulty, file });
   }

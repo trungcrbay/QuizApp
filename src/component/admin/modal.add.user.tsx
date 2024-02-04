@@ -92,26 +92,16 @@ const ModalAddNewUser = (props: any) => {
       body: formData,
     });
 
-    // const handlePostNewUser = async () => {
-    //   const res = await sendRequest<IBackendRes<IAddUser>>({
-    //     url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/participant`,
-    //     method: 'POST',
-    //     body: formData,
-    //   })
-    //   return res;
-    // }
-
-    // const data = await handlePostNewUser();
     const data = await res.json();
-    console.log("check data:",data)
+
     if (data) {
       message.success("Create new user successfully!");
     }
-    console.log("data modal: ", data.DT)
+
   };
 
   const handleOkAddUser = async () => {
-    console.log("chekc data before upload: ", email, username, role, password, file)
+
     //@ts-ignore
     postNewUser({ email, username, role, password, file });
   }

@@ -35,14 +35,14 @@ import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
 const AppHeader = () => {
   const { data: session } = useSession();
-  console.log("session:: ", session)
+
   if (typeof window !== "undefined") {
     localStorage.setItem("access_token", session?.access_token!);
   }
   const router = useRouter()
   const { theme, setTheme } = useTheme();
   const themeRef = useRef(null);
-  console.log("check ref: ", themeRef.current)
+
   const MaterialUISwitch = styled(Switch)(({ theme }) => ({
     width: 62,
     height: 34,

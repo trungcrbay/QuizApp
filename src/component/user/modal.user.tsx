@@ -27,7 +27,7 @@ const style = {
 const ModalProfile = (props: any) => {
     const { open, handleClose } = props;
     const { data: session } = useSession();
-    console.log("session:: ", session)
+
     const [editUsername, setEditUsername] = React.useState<boolean>(false)
     const [username, setUsername] = React.useState("");
     const [accessToken, setAccessToken] = React.useState("");
@@ -43,7 +43,7 @@ const ModalProfile = (props: any) => {
 
     const onChangeUsername = () => {
         console.log("set username: ", username);
-        console.log("set image: ", image);
+
     }
 
 
@@ -71,11 +71,10 @@ const ModalProfile = (props: any) => {
         });
 
         const data = await res.json();
-        console.log("check data: ", data)
+
     };
 
     const handleUpdateProfile = async () => {
-        console.log("check data before upload: ", username, image)
         await postUpdateProfile({ username, image })
     }
     return (

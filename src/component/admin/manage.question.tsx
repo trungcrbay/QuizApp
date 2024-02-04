@@ -48,7 +48,6 @@ const ManageQuestion = (props: any) => {
 
     }, [file])
 
-    console.log("check file: ", file)
 
     const postNewAnswer = async ({
         quizId,
@@ -56,6 +55,7 @@ const ManageQuestion = (props: any) => {
         file,
     }: IAddQUestion) => {
         const formData = new FormData();
+        //@ts-ignore
         formData.append("quiz_id", quizId);
         formData.append("description", description);
         //@ts-ignore
@@ -74,7 +74,6 @@ const ManageQuestion = (props: any) => {
         if (data) {
           message.success("Create new quiz successfully!");
         }
-        console.log("data modal: ", data)
     }
 
     const mappingListQuiz = () => {
@@ -95,7 +94,6 @@ const ManageQuestion = (props: any) => {
 
     const handlePostNewAnswer = async () => {
         postNewAnswer({ quizId, description, file })
-        console.log("check data before upload: ", quizId, description, file)
     }
 
     return (
