@@ -1,14 +1,16 @@
 "use client";
 import { Card, Divider, Row, Col } from "antd";
 import CountUp from "react-countup";
+import { PieChart } from '@mui/x-charts/PieChart';
 
 const AdminDashboard = (props: any) => {
   const { dataDashboard } = props;
-
+  console.log("check dataDashboard: ",dataDashboard)
   return (
     <div>
+
       <Row gutter={[16, 16]}>
-        <Col span={{ xs: 24, md: 12,lg:12 }}>
+        <Col span={{ xs: 24, md: 12, lg: 12 }}>
           <Card style={{ width: 300, background: '#98DBE9', fontSize: '20px' }}>
             <p>Total User</p>
             <Divider />
@@ -20,7 +22,7 @@ const AdminDashboard = (props: any) => {
             </p>
           </Card>
         </Col>
-        <Col span={{ xs: 24, md: 12,lg:12 }}>
+        <Col span={{ xs: 24, md: 12, lg: 12 }}>
           <Card style={{ width: 300, background: "#FBBCC0", fontSize: '20px' }}>
             <p>Total Admin</p>
             <Divider />
@@ -35,7 +37,7 @@ const AdminDashboard = (props: any) => {
       </Row>
       <Divider />
       <Row gutter={[16, 16]}>
-        <Col span={{xs: 24, md: 8}}>
+        <Col span={{ xs: 24, md: 8 }}>
           <Card style={{ width: 300, background: '#B8AEFF', fontSize: '20px' }}>
             <p>Total Quiz</p>
             <Divider />
@@ -47,7 +49,7 @@ const AdminDashboard = (props: any) => {
             </p>
           </Card>
         </Col>
-        <Col span={{xs: 24, md: 8}}>
+        <Col span={{ xs: 24, md: 8 }}>
           <Card style={{ width: 300, background: '#FBBCC0', fontSize: '20px' }}>
             <p>Total Question</p>
             <Divider />
@@ -59,7 +61,7 @@ const AdminDashboard = (props: any) => {
             </p>
           </Card>
         </Col>
-        <Col span={{xs: 24, md: 8}}>
+        <Col span={{ xs: 24, md: 8 }}>
           <Card style={{ width: 300, background: '#B8FBC3', fontSize: '20px' }}>
             <p>Total Answer</p>
             <Divider />
@@ -72,6 +74,23 @@ const AdminDashboard = (props: any) => {
           </Card>
         </Col>
       </Row>
+
+      {/* <PieChart
+        series={[
+          {
+            data: [
+              { id: 0, value: dataDashboard.others.countAnswers, label: 'Total Answers' },
+              { id: 1, value: dataDashboard.others.countQuestions, label: 'Total Questions' },
+              { id: 2, value: dataDashboard.others.countQuiz, label: 'Total Quizzes' },
+              { id: 3, value: dataDashboard.users.countAdmin, label: 'Total Admins' },
+              { id: 4, value: dataDashboard.users.countUsers, label: 'Total Users' },
+            ],
+          },
+        ]}
+        width={500}
+        height={500}
+      /> */}
+      
     </div>
   );
 };

@@ -81,7 +81,7 @@ export const authOptions: AuthOptions = {
             username: user.email,
           },
         });
-        console.log("check res data:")
+        console.log("data: ",res)
         if (res.data) {
           token.access_token = res.data?.access_token;
           token.refresh_token = res.data?.refresh_token;

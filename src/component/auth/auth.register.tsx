@@ -43,14 +43,6 @@ const AuthRegister = (props: any) => {
     });
     const { vertical, horizontal, open } = state;
 
-    const handleClick = (newState: SnackbarOrigin) => () => {
-        setState({ ...newState, open: true });
-    };
-
-    const handleClose = () => {
-        setState({ ...state, open: false });
-    };
-
     const handleCloseSnackbar = () => {
         setOpenSnackbar(false);
     };
@@ -68,9 +60,13 @@ const AuthRegister = (props: any) => {
             }),
         });
         const data = await res.json()
+        console.log("check data: ",data)
         if (data) {
+            setUsername("");
+            setPassword("")
+            setEmail("");
             setOpenSnackbar(true);
-        
+            
         }
     };
 
@@ -98,6 +94,7 @@ const AuthRegister = (props: any) => {
             setErrorPassword("Password is not empty.")
             return;
         }
+
         registerParticipant({ email, username, password })
         
     }
@@ -172,6 +169,7 @@ const AuthRegister = (props: any) => {
                             autoFocus
                             error={isErrorEmail}
                             helperText={errorEmail}
+                            value={email}
                         />
 
                         <TextField
@@ -182,6 +180,7 @@ const AuthRegister = (props: any) => {
                             fullWidth
                             label="Username"
                             name="username"
+                            value={username}
                             error={isErrorUsername}
                             helperText={errorUsername}
                         />
@@ -192,6 +191,7 @@ const AuthRegister = (props: any) => {
                             required
                             fullWidth
                             name="password"
+                            value={password}
                             label="Password"
                             type={showPassword ? "text" : "password"}
                             error={isErrorPassword}
@@ -214,7 +214,6 @@ const AuthRegister = (props: any) => {
                             variant="contained"
                             color="primary"
                             onClick={() => {
-                                // handleClick({ vertical: 'top', horizontal: 'center' })
                                 handleSubmit()
                             }
                             }
@@ -230,8 +229,8 @@ const AuthRegister = (props: any) => {
                             anchorOrigin={{ vertical, horizontal }}
                             open={openSnackbar}
                             sx={{ background: 'transparent' }}
-                            autoHideDuration={2000}
-                            onClose={handleClose}
+                            autoHideDuration={3000}
+                            onClose={handleCloseSnackbar}
                             message={
                                 <Alert icon={<CheckIcon fontSize="inherit" />} onClose={handleCloseSnackbar} severity="success">
                                     Create new user successfully!

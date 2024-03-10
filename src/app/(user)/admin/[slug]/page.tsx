@@ -2,21 +2,9 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import SiderAdmin from "@/component/admin/sider";
 import { sendRequest } from "@/utils/api";
 import { getServerSession } from "next-auth";
-import { redirect } from 'next/navigation'
 
 const Admin = async () => {
   const session = await getServerSession(authOptions);
-
-  // const res = await fetch("http://localhost:8081/api/v1/participant/all", {
-  //   method: "GET",
-
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //     //@ts-ignore
-  //     Authorization: `Bearer ${session.access_token}`,
-  //     "Access-Control-Allow-Origin": "localhost:3000",
-  //   },
-  // });
 
   const fetchAllUser = async () => {
     const res = await sendRequest<IBackendRes<IGetAllUser>>({

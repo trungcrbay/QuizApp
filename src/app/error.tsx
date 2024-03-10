@@ -27,7 +27,8 @@ export default function Error({
             <Image
                 src="/error.jpg"
                 alt="Error picture"
-                
+                width={400}
+                height={400}
             />
             <h2>Something went wrong</h2>
             <Button variant="contained" color="error" sx={{ marginTop: '10px', borderRadius: '10px' }}>
