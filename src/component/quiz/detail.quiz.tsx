@@ -25,15 +25,17 @@ const DetailQuiz = (props: any) => {
   const [answerApi, setAnswerApi] = useState<Answer[]>([]);
   const [open, setOpen] = useState<boolean>(false);
   const [result, setResult] = useState<Result | any>({});
-  const [isEndQuiz, setIsEndQUiz] = useState<boolean>(false);
+  const [isEndQuiz, setIsEndQuiz] = useState<boolean>(false);
   const [isShowResult, setIsShowResult] = useState<boolean>(false);
-  const [currentQuizSelected,setCurrentQuizSelected] = useState<any[]>([]);
+  const [currentQuizSelected, setCurrentQuizSelected] = useState<any[]>([]);
   const params = useParams<{ slug: string }>();
   const quizId = params.slug
+
+  console.log("re render detail quiz")
   const handleOpen = () => setOpen(true);
 
   const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>, id: any, quizId: any) => {
-    const currentAnswers = _.cloneDeep(dataQuiz[indexQuiz].answers); 
+    const currentAnswers = _.cloneDeep(dataQuiz[indexQuiz].answers);
 
     const currentSelectedAnswers = currentAnswers.map((item: any) => {
       if (+item.id === +quizId) {
@@ -44,7 +46,7 @@ const DetailQuiz = (props: any) => {
       }
       return item;
     });
-    dataQuiz[indexQuiz].answers = currentSelectedAnswers; 
+    dataQuiz[indexQuiz].answers = currentSelectedAnswers;
     setDataquiz(dataQuiz);
   };
 
@@ -62,13 +64,12 @@ const DetailQuiz = (props: any) => {
     });
     var data = await res.json();
     if (data) {
-    
+
       setResult(data.DT)
     }
   };
 
   const handleSubmit = () => {
-
     let payload: Payload = {
       quizId: +quizId,
       answers: []
@@ -92,8 +93,7 @@ const DetailQuiz = (props: any) => {
       payload.answers = answers
       setAnswerApi(answers)
     }
-    setTimer(0);
-    setIsEndQUiz(true);
+    setIsEndQuiz(true);
   };
 
   const handleNextQuiz = () => {
@@ -110,6 +110,8 @@ const DetailQuiz = (props: any) => {
       resResult();
     }
   }, [answerApi]);
+
+
 
   return (
     <Container>
@@ -185,7 +187,7 @@ const DetailQuiz = (props: any) => {
 
                               // label={`${quiz.description}${isCheckCorrectAnswer && isCheckWrongAnswer === false ? ' dung r' : ' sai r'}`}
                               label={
-                                <div style={{ gap: '3px', alignItems: 'center', display: 'flex',color:'var(--fg)' }}>
+                                <div style={{ gap: '3px', alignItems: 'center', display: 'flex', color: 'var(--fg)' }}>
                                   {quiz.description}
                                   {isShowResult === true &&
                                     <>
@@ -247,7 +249,7 @@ const DetailQuiz = (props: any) => {
               setIndexQuiz={setIndexQuiz}
               setTimer={setTimer}
               isEndQuiz={isEndQuiz}
-              setIsEndQUiz={setIsEndQUiz}
+              setIsEndQuiz={setIsEndQuiz}
               dataQuiz={dataQuiz}
               currentQuizSelected={currentQuizSelected}
             />

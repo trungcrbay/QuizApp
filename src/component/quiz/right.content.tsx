@@ -5,12 +5,11 @@ import CountDown from "../countdown/countdown.time";
 import ReplayIcon from "@mui/icons-material/Replay";
 import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
-import { memo } from "react";
 
 const RightContent = (props: any) => {
   const { open, setOpen, countCorrect, countTotal, handleOpen,
-    handleSubmit, timer, setTimer, isEndQuiz, setIsEndQuiz,
-    dataQuiz, indexQuiz, setIndexQuiz, isCheckSelectedAnswer } = props
+    handleSubmit, isEndQuiz,
+    dataQuiz, indexQuiz, setIndexQuiz,timerCountDown } = props
     console.log("re render")
   return (
     <Box
@@ -41,8 +40,8 @@ const RightContent = (props: any) => {
           <CountDown
             open={open}
             setOpen={setOpen} countCorrect={countCorrect}
-            countTotal={countTotal} handleSubmit={handleSubmit}
-            timer={timer} setTimer={setTimer}
+            isEndQuiz={isEndQuiz}
+            countTotal={countTotal} handleSubmit={handleSubmit}    
           />
         </Box>
         <Button

@@ -3,8 +3,8 @@ import ModalQuizResult from "../quiz/modal.result";
 
 
 const CountDown = (props: any) => {
-    const {open, setOpen, countTotal, countCorrect,handleSubmit ,timer ,setTimer} = props
-    
+    const { setOpen, handleSubmit, isEndQuiz } = props
+    const [timer, setTimer] = useState(150)
     const format = (time: number) => {
         // Hours, minutes and seconds
         var hrs = ~~(time / 3600);
@@ -22,16 +22,21 @@ const CountDown = (props: any) => {
     }
 
     useEffect(() => {
-        if (timer === 0){
-            setOpen(true)
-            handleSubmit()
-            return
+        if (isEndQuiz) {
+            setTimer(0);
+            setOpen(true);
+            handleSubmit();
         }
-        const timerCountDown = setInterval(() => {
-            setTimer(timer - 1)
-        }, 1000)
-        return () => {
-            clearInterval(timerCountDown)
+    }, [isEndQuiz]);
+
+    useEffect(() => {
+        if (timer > 0) {
+            const timerCountDown = setInterval(() => {
+                setTimer(timer - 1)
+            }, 1000)
+            return () => {
+                clearInterval(timerCountDown)
+            }
         }
     }, [timer])
 
