@@ -44,7 +44,7 @@ const SiderAdmin = (props: any) => {
     },
   );
 
-  console.log("check super list:", listUser);
+
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },

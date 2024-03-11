@@ -31,7 +31,6 @@ const DetailQuiz = (props: any) => {
   const params = useParams<{ slug: string }>();
   const quizId = params.slug
 
-  console.log("re render detail quiz")
   const handleOpen = () => setOpen(true);
 
   const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>, id: any, quizId: any) => {

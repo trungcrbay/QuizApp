@@ -5,7 +5,7 @@ import { PieChart } from '@mui/x-charts/PieChart';
 
 const AdminDashboard = (props: any) => {
   const { dataDashboard } = props;
-  console.log("check dataDashboard: ",dataDashboard)
+
   return (
     <div>
 

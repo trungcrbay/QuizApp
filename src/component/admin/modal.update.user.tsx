@@ -23,11 +23,11 @@ interface FieldType {
 }
 
 const onFinish = (values: any) => {
-  console.log("Success:", values);
+
 };
 
 const onFinishFailed = (errorInfo: any) => {
-  console.log("Failed:", errorInfo);
+
 };
 
 
@@ -86,7 +86,6 @@ const ModalUpdateUser = (props: any) => {
   };
 
   const handleUpdateParticipant = () => {
-    console.log("check data before update: ", id, username, role, image)
     //@ts-ignore
     updateParticipant({ id, username, role, image })
   }

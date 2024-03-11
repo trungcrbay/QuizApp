@@ -33,15 +33,9 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 const HistoryUser = (props: any) => {
     const { historyData } = props;
-    console.log("check data: ", historyData)
     const rowsData = historyData.data.map((item: any) => {
         return item;
     })
-
-    // let utcTime = "2024-01-15T13:56:59.000Z";
-    // var offset = moment().utcOffset();
-    // var localText = moment.utc(utcTime).utcOffset(offset).format("L LT");
-    // console.log("localText", localText)
 
     const convertToLocaleDate = (time: Date) => {
         let utcTime = time;

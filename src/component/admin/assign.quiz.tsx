@@ -66,7 +66,7 @@ const AssignQuiz = (props: any) => {
         }else{
             message.error(data.EM)
         }
-        console.log("check assign quiz to user: ", data);
+
     };
 
     return (

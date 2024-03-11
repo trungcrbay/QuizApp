@@ -6,7 +6,6 @@ import { redirect } from 'next/navigation'
 
 const DashboardQuiz = async () => {
   const session = await getServerSession(authOptions);
-  console.log("check session: ", session)
 
   const getAllQuiz = async () => {
     const res = await sendRequest<IBackendRes<IGetQuizByParticipant>>({
@@ -21,7 +20,7 @@ const DashboardQuiz = async () => {
 
   };
   const data = await getAllQuiz()
-  console.log("vcl data: ", data.DT)
+
   return (
     <div style={{ marginTop: 0 }}>
       <HomeQuiz dataQuiz={data.DT} />

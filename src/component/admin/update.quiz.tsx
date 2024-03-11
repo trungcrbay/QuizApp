@@ -24,17 +24,16 @@ interface FieldType {
 
 
 const onFinish = (values: any) => {
-    console.log("Success:", values);
+  
 };
 
 const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
+   
 };
 
 
 const ModalUpdateQuiz = (props: any) => {
     const { open, onCancel, dataUpdate, access_token } = props;
-    console.log("check data da update modal:", dataUpdate);
     const [id, setId] = useState(0);
     const [description, setDescription] = useState("");
     const [name, setName] = useState("");

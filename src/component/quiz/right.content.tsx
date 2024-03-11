@@ -10,7 +10,7 @@ const RightContent = (props: any) => {
   const { open, setOpen, countCorrect, countTotal, handleOpen,
     handleSubmit, isEndQuiz,
     dataQuiz, indexQuiz, setIndexQuiz,timerCountDown } = props
-    console.log("re render")
+
   return (
     <Box
       sx={{ border: "1px solid var(--fg)", width: "100%", height: "500px" }}

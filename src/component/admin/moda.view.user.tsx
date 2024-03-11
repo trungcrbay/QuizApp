@@ -9,11 +9,11 @@ interface FieldType {
   remember?: string;
 }
 const onFinish = (values: any) => {
-  console.log("Success:", values);
+ 
 };
 
 const onFinishFailed = (errorInfo: any) => {
-  console.log("Failed:", errorInfo);
+
 };
 
 const ModalViewUser = (props: any) => {

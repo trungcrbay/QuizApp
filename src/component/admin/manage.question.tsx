@@ -18,7 +18,7 @@ const ManageQuestion = (props: any) => {
 
     const handleChangeQuiz = (value: string) => {
         setQuizId(value);
-        console.log(`selected ${value}`);
+
     };
 
     const propsUpload: UploadProps = {

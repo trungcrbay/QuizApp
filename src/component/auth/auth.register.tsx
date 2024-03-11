@@ -60,7 +60,6 @@ const AuthRegister = (props: any) => {
             }),
         });
         const data = await res.json()
-        console.log("check data: ",data)
         if (data) {
             setUsername("");
             setPassword("")
@@ -104,7 +103,7 @@ const AuthRegister = (props: any) => {
     // }
 
     const keyDownHandler = (event: React.KeyboardEvent) => {
-        console.log(event.key)
+   
         if (event.key === 'Enter') {
             handleSubmit();
         }

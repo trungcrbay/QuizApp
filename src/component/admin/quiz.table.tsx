@@ -59,7 +59,6 @@ const QuizTable = (props: any) => {
   };
 
   const cancel = (e: React.MouseEvent<HTMLElement>) => {
-    console.log(e);
     message.error("Cancel");
   };
   const columns: ColumnsType<DataType> = [

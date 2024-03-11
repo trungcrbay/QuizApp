@@ -42,7 +42,7 @@ const ModalProfile = (props: any) => {
     }, [])
 
     const onChangeUsername = () => {
-        console.log("set username: ", username);
+
 
     }
 
